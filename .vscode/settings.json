@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "*.ts": "typescriptreact",
+    "esp_log.h": "c",
+    "esp_err.h": "c",
+    "gpio.h": "c",
+    "esp_timer.h": "c",
+    "adc_oneshot.h": "c"
+  }
+}
