@@ -8,6 +8,7 @@
 
 #include "sensors/lm35/lm35.h"
 #include "sensors/wifi/wifi.h"
+#include "sensors/mqtt/mqtt.h"
 
 #include "secrets/secrets.h"
 
@@ -47,6 +48,8 @@ void app_main(void)
   wifi_init_sta(WIFI_SSID, WIFI_PASS);
 
   // uart_write_bytes(UART_PORT, "Hello world!\r\n", 15);
+
+  mqtt_app_start();
 
   while (1)
   {
