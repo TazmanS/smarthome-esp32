@@ -4,7 +4,11 @@
 #include "driver/uart.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
-#include "lm35.h"
+
+#include "sensors/lm35/lm35.h"
+#include "sensors/wifi/wifi.h"
+
+#include "secrets/secrets.h"
 
 #define UART_PORT UART_NUM_1
 #define UART_TX_PIN GPIO_NUM_1
@@ -30,6 +34,7 @@ void app_main(void)
 {
   init_uart();
   lm35_init(ADC1_CHANNEL_0);
+  wifi_init_sta(WIFI_SSID, WIFI_PASS);
 
   uart_write_bytes(UART_PORT, "Hello world!\r\n", 15);
 

@@ -5,6 +5,11 @@
     "esp_err.h": "c",
     "gpio.h": "c",
     "esp_timer.h": "c",
-    "adc_oneshot.h": "c"
+    "adc_oneshot.h": "c",
+    "lm35.h": "c",
+    "wifi.h": "c",
+    "task.h": "c",
+    "*.editorconfig": "c",
+    "secrets.h": "c"
   }
 }
