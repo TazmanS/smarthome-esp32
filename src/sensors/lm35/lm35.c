@@ -21,6 +21,6 @@ esp_err_t lm35_read_temperature(adc1_channel_t channel, float *temperature)
   float voltage = ((float)raw / 4095.0f) * 2200.0f;
   *temperature = voltage / 10.0f;
 
-  ESP_LOGI(TAG, "raw=%d mv=%.1f temp=%.1f", raw, voltage, *temperature);
+  // ESP_LOGI(TAG, "raw=%d mv=%.1f temp=%.1f", raw, voltage, *temperature);
   return ESP_OK;
 }

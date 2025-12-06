@@ -34,29 +34,35 @@ void wifi_init_sta(const char *ssid, const char *password)
   s_wifi_event_group = xEventGroupCreate();
 
   ESP_ERROR_CHECK(esp_netif_init());
-  esp_netif_create_default_wifi_sta();
+  ESP_ERROR_CHECK(esp_event_loop_create_default());
 
   wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-  /* Register event handlers */
+  esp_netif_create_default_wifi_sta();
+
+  static esp_event_handler_instance_t instance_any_id;
+  static esp_event_handler_instance_t instance_got_ip;
+
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
       WIFI_EVENT,
       ESP_EVENT_ANY_ID,
       &wifi_event_handler,
       NULL,
-      NULL));
+      &instance_any_id));
 
   ESP_ERROR_CHECK(esp_event_handler_instance_register(
       IP_EVENT,
       IP_EVENT_STA_GOT_IP,
       &wifi_event_handler,
       NULL,
-      NULL));
+      &instance_got_ip));
 
   wifi_config_t wifi_config = {0};
-  strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
-  strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
+  strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid) - 1);
+  wifi_config.sta.ssid[sizeof(wifi_config.sta.ssid) - 1] = '\0';
+  strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password) - 1);
+  wifi_config.sta.password[sizeof(wifi_config.sta.password) - 1] = '\0';
 
   wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
 
