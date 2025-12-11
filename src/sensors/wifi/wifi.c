@@ -1,4 +1,9 @@
 #include "wifi.h"
+#include "esp_wifi.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
 
 static const char *TAG = "WIFI_STA";
 
@@ -23,7 +28,7 @@ static void wifi_event_handler(void *arg,
   }
   else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
   {
-    ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
+    // ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
     // ESP_LOGI(TAG, "Got IP: %s", esp_ip4addr_ntoa(&event->ip_info.ip));
     xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
   }

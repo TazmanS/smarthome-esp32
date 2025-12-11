@@ -1,26 +1,22 @@
 #include "lm35.h"
-#include "esp_log.h"
+#include "esp_adc_cal.h"
 
-static const char *TAG = "LM35";
+static esp_adc_cal_characteristics_t *adc_chars;
 
-esp_err_t lm35_init(adc1_channel_t channel)
+void lm35_init(adc1_channel_t channel)
 {
   adc1_config_width(ADC_WIDTH_BIT_12);
-  adc1_config_channel_atten(channel, ADC_ATTEN_DB_6);
+  adc1_config_channel_atten(channel, ADC_ATTEN_DB_12);
 
-  ESP_LOGI(TAG, "LM35 init done");
-  return ESP_OK;
+  adc_chars = calloc(1, sizeof(esp_adc_cal_characteristics_t));
+
+  esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_12, ADC_WIDTH_BIT_12, 1100, adc_chars);
 }
 
-esp_err_t lm35_read_temperature(adc1_channel_t channel, float *temperature)
+float lm35_read_temperature(adc1_channel_t channel)
 {
   int raw = adc1_get_raw(channel);
-  if (raw < 0)
-    return ESP_FAIL;
-
-  float voltage = ((float)raw / 4095.0f) * 2200.0f;
-  *temperature = voltage / 10.0f;
-
-  // ESP_LOGI(TAG, "raw=%d mv=%.1f temp=%.1f", raw, voltage, *temperature);
-  return ESP_OK;
+  uint32_t voltage = esp_adc_cal_raw_to_voltage(raw, adc_chars);
+  float temp = voltage / 100.0f;
+  return temp;
 }
