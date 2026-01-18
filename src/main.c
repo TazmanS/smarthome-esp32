@@ -1,19 +1,19 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
 
 #include "sensors/lm35/lm35.h"
 #include "sensors/wifi/wifi.h"
 #include "sensors/mqtt/mqtt.h"
+#include "sensors/adc/adc.h"
 
 #include "secrets/secrets.h"
 
 void app_main(void)
 {
-  lm35_init(ADC1_CHANNEL_0);
+  adc_init();
 
   ESP_LOGI("MAIN", "Initializing NVS...");
   esp_err_t ret = nvs_flash_init();
@@ -29,10 +29,12 @@ void app_main(void)
 
   while (1)
   {
-    float t = lm35_read_temperature(ADC1_CHANNEL_0);
+    float t = lm35_read_temperature();
 
     char buf[64];
     sprintf(buf, "{\"temperature\": %.2f}", t);
+
+    ESP_LOGI("MAIN", "Temperature: %.2f C", t);
 
     mqtt_publish("sensor/temperature", buf);
 
