@@ -16,5 +16,5 @@ float lm35_read_temperature()
   uint32_t raw = sum / samples;
   uint32_t voltage_mv = esp_adc_cal_raw_to_voltage(raw, adc_chars);
 
-  return voltage_mv / 100.0;
+  return voltage_mv / 10.0;
 }
