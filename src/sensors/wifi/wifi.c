@@ -1,3 +1,9 @@
+/**
+ * @file wifi.c
+ * @brief WiFi connectivity implementation
+ * @details Implements WiFi initialization and station mode connection handling
+ */
+
 #include "wifi.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
@@ -34,6 +40,13 @@ static void wifi_event_handler(void *arg,
   }
 }
 
+/**
+ * @brief Initializes WiFi in station mode
+ * @details Connects to WiFi network using provided SSID and password credentials
+ * @param[in] ssid WiFi network SSID
+ * @param[in] password WiFi network password
+ * @return void
+ */
 void wifi_init_sta(const char *ssid, const char *password)
 {
   s_wifi_event_group = xEventGroupCreate();

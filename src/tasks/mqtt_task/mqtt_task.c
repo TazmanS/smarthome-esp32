@@ -1,8 +1,20 @@
+/**
+ * @file mqtt_task.c
+ * @brief MQTT task implementation
+ * @details Implements FreeRTOS task for MQTT communication handling
+ */
+
 #include "mqtt_task.h"
 #include "tasks/tasks.h"
 #include "sensors/mqtt/mqtt.h"
 
-void mqttTask(void *pvParameters)
+/**
+ * @brief MQTT communication task function
+ * @details FreeRTOS task for handling MQTT message publishing and subscription
+ * @param[in] pvParameters Task parameters (unused)
+ * @return void
+ */
+void mqtt_task(void *pvParameters)
 {
   while (1)
   {

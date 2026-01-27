@@ -1,8 +1,20 @@
-#include "tasks/log_task/log_task.h"
+/**
+ * @file log_task.c
+ * @brief Logging task implementation
+ * @details Implements FreeRTOS task for logging application events and status
+ */
+
+#include "log_task.h"
 #include "tasks/tasks.h"
 #include "esp_log.h"
 
-void logTask(void *pvParameters)
+/**
+ * @brief Logging task function
+ * @details FreeRTOS task that periodically logs application status and events
+ * @param[in] pvParameters Task parameters (unused)
+ * @return void
+ */
+void log_task(void *pvParameters)
 {
   while (1)
   {

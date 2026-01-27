@@ -1,3 +1,9 @@
+/**
+ * @file mqtt.c
+ * @brief MQTT client implementation
+ * @details Implements MQTT client initialization and message handling
+ */
+
 #include "mqtt.h"
 #include "esp_log.h"
 #include "mqtt_client.h"
@@ -58,6 +64,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
   }
 }
 
+/**
+ * @brief Starts MQTT client application
+ * @details Initializes and connects MQTT client to broker for IoT communication
+ * @return void
+ */
 void mqtt_app_start(void)
 {
   esp_mqtt_client_config_t mqtt_cfg = {

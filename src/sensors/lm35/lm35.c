@@ -1,7 +1,18 @@
+/**
+ * @file lm35.c
+ * @brief LM35 temperature sensor implementation
+ * @details Implements temperature reading and conversion for LM35 analog sensor
+ */
+
 #include "lm35.h"
 #include "../adc/adc.h"
 
-float lm35_read_temperature()
+/**
+ * @brief Reads temperature from LM35 sensor
+ * @details Performs ADC conversion and converts raw value to Celsius
+ * @return float Temperature value in Celsius
+ */
+float lm35_read_temperature(void)
 {
   const int samples = 32;
   uint32_t sum = 0;

@@ -1,0 +1,13 @@
+PROJECT_NAME           = "smarthome esp32"
+OUTPUT_DIRECTORY       = docs
+INPUT                  = src
+RECURSIVE              = YES
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+EXTRACT_ALL            = YES
+EXTRACT_STRUCTS        = YES
+EXTRACT_CLASSES        = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+OPTIMIZE_OUTPUT_FOR_C  = YES
+SHOW_INCLUDE_FILES     = YES

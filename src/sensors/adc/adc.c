@@ -1,3 +1,9 @@
+/**
+ * @file adc.c
+ * @brief ADC (Analog-to-Digital Converter) implementation
+ * @details Implements ADC initialization and configuration for analog sensor input
+ */
+
 #include "adc.h"
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
@@ -8,7 +14,12 @@
 esp_adc_cal_characteristics_t *adc_chars;
 adc1_channel_t ADC_CHANNEL = ADC1_CHANNEL_0;
 
-void adc_init()
+/**
+ * @brief Initializes ADC hardware
+ * @details Configures ADC channels and sampling parameters for sensor readings
+ * @return void
+ */
+void adc_init(void)
 {
   adc1_config_width(ADC_WIDTH_BIT_12);
   adc1_config_channel_atten(ADC_CHANNEL, ADC_ATTEN_DB_12);
