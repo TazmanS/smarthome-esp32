@@ -7,12 +7,15 @@
 
 #include "nvs_flash.h"
 
-#include "sensors/wifi/wifi.h"
-#include "sensors/mqtt/mqtt.h"
-#include "sensors/adc/adc.h"
+#include "modules/wifi/wifi.h"
+#include "modules/mqtt/mqtt.h"
+#include "modules/adc/adc.h"
+#include "modules/my_i2c/my_i2c.h"
 
 #include "secrets/secrets.h"
 #include "tasks/tasks.h"
+
+#include "sensors/lcd1602/lcd1602.h"
 
 /**
  * @brief Main application entry point
@@ -40,6 +43,10 @@ void app_main(void)
   wifi_init_sta(WIFI_SSID, WIFI_PASS);
 
   mqtt_app_start();
+
+  i2c_init();
+
+  lcd1602_init(I2C_NUM_0);
 
   tasks_init();
 }

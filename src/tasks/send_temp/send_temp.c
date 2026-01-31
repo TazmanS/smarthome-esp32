@@ -15,7 +15,7 @@
 
 /**
  * @brief Temperature reading and transmission task function
- * @details FreeRTOS task that reads LM35 temperature sensor and sends data via MQTT
+ * @details FreeRTOS task that reads LM35 temperature sensor and sends data via MQTT + Logs + store laste temp
  * @param[in] pvParameters Task parameters (unused)
  * @return void
  */
@@ -32,6 +32,8 @@ void send_temp_task(void *pvParameters)
     xQueueSend(mqttQueue, &data, portMAX_DELAY);
 
     xQueueSend(logQueue, &data, portMAX_DELAY);
+
+    xQueueOverwrite(tempStoreQueue, &temp);
 
     // TODO take delay from env
     vTaskDelay(pdMS_TO_TICKS(1000));

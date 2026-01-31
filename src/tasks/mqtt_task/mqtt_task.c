@@ -6,7 +6,7 @@
 
 #include "mqtt_task.h"
 #include "tasks/tasks.h"
-#include "sensors/mqtt/mqtt.h"
+#include "modules/mqtt/mqtt.h"
 
 /**
  * @brief MQTT communication task function

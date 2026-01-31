@@ -5,7 +5,7 @@
  */
 
 #include "lm35.h"
-#include "../adc/adc.h"
+#include "modules/adc/adc.h"
 
 /**
  * @brief Reads temperature from LM35 sensor
