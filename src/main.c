@@ -12,10 +12,12 @@
 #include "modules/adc/adc.h"
 #include "modules/my_i2c/my_i2c.h"
 
-#include "secrets/secrets.h"
+#include "config/secrets/secrets.h"
 #include "tasks/tasks.h"
 
 #include "sensors/lcd1602/lcd1602.h"
+#include "sensors/leds/leds.h"
+#include "interrupts/buttons/buttons.h"
 
 /**
  * @brief Main application entry point
@@ -47,6 +49,10 @@ void app_main(void)
   i2c_init();
 
   lcd1602_init(I2C_NUM_0);
+
+  // init_leds();
+
+  // buttons_interrupt_init();
 
   tasks_init();
 }
