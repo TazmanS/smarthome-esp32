@@ -1,14 +1,30 @@
+/**
+ * @file leds.c
+ * @brief LED control implementation
+ * @details Implements simple LED API (init, on, off, toggle with debounce)
+ */
+
 #include "leds.h"
 #include "driver/gpio.h"
 #include "config/pins/pins.h"
+#include "esp_timer.h"
 
 LED DOOR_LED;
 LED ROOF_LED;
 
+#define LED_DEBOUNCE_TIME_US 200000
+
+/**
+ * @brief Initialize an LED object and configure GPIO
+ * @param[out] led Pointer to LED object to initialize
+ * @param[in] pin GPIO pin used by LED
+ * @return void
+ */
 void LED_init(LED *led, gpio_num_t pin)
 {
   led->pin = pin;
   led->state = false;
+  led->last_toggle_time_us = 0;
 
   gpio_config_t io_config = {
       .pin_bit_mask = (1ULL << pin),
@@ -22,24 +38,49 @@ void LED_init(LED *led, gpio_num_t pin)
   gpio_set_level(pin, 0);
 }
 
+/**
+ * @brief Turn LED on
+ * @param[in,out] led Pointer to LED object
+ * @return void
+ */
 void LED_on(LED *led)
 {
   led->state = true;
   gpio_set_level(led->pin, 1);
 }
 
+/**
+ * @brief Turn LED off
+ * @param[in,out] led Pointer to LED object
+ * @return void
+ */
 void LED_off(LED *led)
 {
   led->state = false;
   gpio_set_level(led->pin, 0);
 }
 
+/**
+ * @brief Toggle LED state with debounce
+ * @param[in,out] led Pointer to LED object
+ * @return void
+ */
 void LED_toggle(LED *led)
 {
-  led->state = !led->state;
-  gpio_set_level(led->pin, led->state ? 1 : 0);
+  int64_t now = esp_timer_get_time();
+
+  if (now - led->last_toggle_time_us > LED_DEBOUNCE_TIME_US)
+  {
+    led->last_toggle_time_us = now;
+    led->state = !led->state;
+    gpio_set_level(led->pin, led->state ? 1 : 0);
+  }
 }
 
+/**
+ * @brief Initialize all application LEDs
+ * @return void
+ */
 void init_leds()
 {
   LED_init(&DOOR_LED, DOOR_LED_PIN);

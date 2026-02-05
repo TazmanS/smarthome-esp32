@@ -17,6 +17,7 @@
 
 #include "sensors/lcd1602/lcd1602.h"
 #include "sensors/leds/leds.h"
+#include "sensors/pir_motion/pir_motion.h"
 #include "interrupts/buttons/buttons.h"
 
 /**
@@ -50,9 +51,11 @@ void app_main(void)
 
   lcd1602_init(I2C_NUM_0);
 
-  // init_leds();
+  init_leds();
 
-  // buttons_interrupt_init();
+  buttons_interrupt_init();
+
+  pir_motion_init();
 
   tasks_init();
 }

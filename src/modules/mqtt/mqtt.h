@@ -13,6 +13,13 @@
  * @return void
  */
 void mqtt_app_start(void);
+
+/**
+ * @brief Publish a message to an MQTT topic
+ * @param[in] topic Topic string to publish to
+ * @param[in] data Payload string to send
+ * @return void
+ */
 void mqtt_publish(const char *topic, const char *data);
 
 #endif

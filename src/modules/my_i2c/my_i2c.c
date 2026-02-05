@@ -1,7 +1,18 @@
+/**
+ * @file my_i2c.c
+ * @brief I2C helper implementation
+ * @details Implements initialization of I2C master used by LCD and other I2C peripherals
+ */
+
 #include "my_i2c.h"
 #include "driver/i2c.h"
 #include "config/pins/pins.h"
 
+/**
+ * @brief Initialize I2C peripheral
+ * @details Configures and installs the I2C master driver on I2C_NUM_0
+ * @return void
+ */
 void i2c_init(void)
 {
   i2c_config_t config = {

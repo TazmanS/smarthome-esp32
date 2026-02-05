@@ -1,3 +1,9 @@
+/**
+ * @file display_task.c
+ * @brief Display task implementation
+ * @details Receives stored temperature values and updates the LCD display
+ */
+
 #include "display_task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -5,6 +11,11 @@
 #include "tasks/tasks.h"
 #include "sensors/lcd1602/lcd1602.h"
 
+/**
+ * @brief FreeRTOS task that updates the display with the latest temperature
+ * @param[in] pvParameters Task parameters (unused)
+ * @return void
+ */
 void display_task(void *pvParameters)
 {
   while (1)

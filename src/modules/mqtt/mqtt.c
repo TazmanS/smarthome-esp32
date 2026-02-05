@@ -12,6 +12,12 @@ static const char *TAG = "MQTT";
 
 static esp_mqtt_client_handle_t client = NULL;
 
+/**
+ * @brief Publish a message to an MQTT topic
+ * @param[in] topic Topic string to publish to
+ * @param[in] data Payload string to send
+ * @return void
+ */
 void mqtt_publish(const char *topic, const char *data)
 {
   if (client == NULL)
@@ -32,6 +38,10 @@ void mqtt_publish(const char *topic, const char *data)
   }
 }
 
+/**
+ * @internal
+ * @brief Internal MQTT event dispatcher
+ */
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
                                int32_t event_id, void *event_data)
 {

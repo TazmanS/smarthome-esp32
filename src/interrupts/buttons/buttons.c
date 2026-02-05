@@ -1,10 +1,25 @@
+/**
+ * @file buttons.c
+ * @brief Button interrupt implementation
+ * @details Implements button initialization and ISR callback used to toggle LEDs
+ */
+
 #include "buttons.h"
 #include "sensors/leds/leds.h"
 #include "config/pins/pins.h"
+#include "esp_attr.h"
 
 Button DOOR_BUTTON;
 Button ROOF_BUTTON;
 
+/**
+ * @brief Initialize a Button object and register ISR
+ * @param[out] btn Pointer to Button object to initialize
+ * @param[in] pin GPIO pin used by the button
+ * @param[in] callback ISR callback function
+ * @param[in] arg Argument passed to callback
+ * @return void
+ */
 void Button_init(Button *btn, gpio_num_t pin, void (*callback)(void *), void *arg)
 {
   btn->pin = pin;
@@ -23,12 +38,20 @@ void Button_init(Button *btn, gpio_num_t pin, void (*callback)(void *), void *ar
   gpio_isr_handler_add(pin, callback, arg);
 }
 
-void button_pressed(void *arg)
+/**
+ * @internal
+ * @brief ISR fired when a button is pressed; toggles linked LED
+ */
+void IRAM_ATTR button_pressed(void *arg)
 {
   LED *led = (LED *)arg;
   LED_toggle(led);
 }
 
+/**
+ * @brief Initialize button interrupts for application buttons
+ * @return void
+ */
 void buttons_interrupt_init()
 {
   Button_init(&DOOR_BUTTON, DOOR_BUTTON_PIN, button_pressed, &DOOR_LED);
