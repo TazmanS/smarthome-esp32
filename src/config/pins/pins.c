@@ -5,7 +5,7 @@
 
 #include "pins.h"
 
-const gpio_num_t LM35_PIN = GPIO_NUM_4;      /**< Analog pin for LM35 temperature sensor */
+const gpio_num_t LM35_PIN = GPIO_NUM_36;     /**< Analog pin for LM35 temperature sensor */
 const gpio_num_t I2C_SDA_PIN = GPIO_NUM_21;  /**< I2C SDA */
 const gpio_num_t I2C_SCL_PIN = GPIO_NUM_22;  /**< I2C SCL */
 const gpio_num_t DOOR_LED_PIN = GPIO_NUM_33; /**< Door LED GPIO */

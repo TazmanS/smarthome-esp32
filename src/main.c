@@ -9,7 +9,6 @@
 
 #include "modules/wifi/wifi.h"
 #include "modules/mqtt/mqtt.h"
-#include "modules/adc/adc.h"
 #include "modules/my_i2c/my_i2c.h"
 #include "modules/pwm/pwm.h"
 
@@ -20,6 +19,7 @@
 #include "sensors/leds/leds.h"
 #include "sensors/pir_motion/pir_motion.h"
 #include "sensors/servo/servo.h"
+#include "sensors/lm35/lm35.h"
 
 #include "interrupts/buttons/buttons.h"
 
@@ -37,8 +37,6 @@
  */
 void app_main(void)
 {
-  adc_init();
-
   esp_err_t ret = nvs_flash_init();
   if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
   {
@@ -49,6 +47,8 @@ void app_main(void)
   // wifi_init_sta(WIFI_SSID, WIFI_PASS);
 
   // mqtt_app_start();
+
+  init_lm35();
 
   i2c_init();
 

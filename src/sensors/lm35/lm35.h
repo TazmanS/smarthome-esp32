@@ -17,4 +17,11 @@
  */
 float lm35_read_temperature(void);
 
+/**
+ * @brief Initializes LM35 sensor
+ * @details Configures ADC channel and parameters for LM35 readings
+ * @return void
+ */
+void init_lm35();
+
 #endif

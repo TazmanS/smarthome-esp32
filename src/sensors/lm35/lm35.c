@@ -5,14 +5,29 @@
  */
 
 #include "lm35.h"
+#include "config/pins/pins.h"
 #include "modules/adc/adc.h"
 
 #define SMA_WINDOW_SIZE 16
+#define ADC_MAX_RAW 4095.0
+#define ADC_MAX_MV 3300.0
 
 static int sma_buffer[SMA_WINDOW_SIZE];
 static int sma_index = 0;
 static int sma_count = 0;
 static int sma_sum = 0;
+
+ADC_MODULE adc_lm35_module = {};
+
+void init_lm35()
+{
+  adc_lm35_module.pin = LM35_PIN,
+  adc_lm35_module.channel = ADC_CHANNEL_0,
+  adc_lm35_module.unit = ADC_UNIT_1,
+  adc_lm35_module.attenuation = ADC_ATTEN_DB_12,
+  adc_lm35_module.bitwidth = ADC_BITWIDTH_12,
+  adc_init(&adc_lm35_module);
+};
 
 static int sma_add_sample(int new_sample)
 {
@@ -44,20 +59,10 @@ static int sma_add_sample(int new_sample)
  */
 float lm35_read_temperature(void)
 {
-  const int samples = 32;
-  uint32_t sum = 0;
-
-  for (int i = 0; i < samples; i++)
-  {
-    sum += adc1_get_raw(ADC_CHANNEL);
-    for (volatile int i = 0; i < 1000; i++)
-      ;
-  }
-
-  uint32_t raw = sum / samples;
-  uint32_t voltage_mv = esp_adc_cal_raw_to_voltage(raw, adc_chars);
-
-  uint32_t smoothed_voltage = sma_add_sample(voltage_mv);
-
-  return smoothed_voltage / 10.0;
+  int raw_adc_value = 0;
+  ESP_ERROR_CHECK(adc_oneshot_read(adc_lm35_module.adc_handle, adc_lm35_module.channel, &raw_adc_value));
+  float voltage_mv = ((float)raw_adc_value / ADC_MAX_RAW) * ADC_MAX_MV;
+  float averaged_mv = sma_add_sample((int)voltage_mv);
+  float temperature_c = averaged_mv / 10.0f;
+  return temperature_c;
 }
