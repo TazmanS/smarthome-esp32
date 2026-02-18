@@ -28,7 +28,7 @@ extern const gpio_num_t ROOF_BUTTON_PIN;
 /** PIR motion sensor pin */
 extern const gpio_num_t PIR_MOTION_PIN;
 
-/**< Window servo GPIO */
+/** Window servo pin */
 extern const gpio_num_t WINDOW_SERVO_PIN;
 
 #endif

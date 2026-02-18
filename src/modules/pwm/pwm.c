@@ -1,3 +1,9 @@
+/**
+ * @file pwm.c
+ * @brief PWM implementation for servo control
+ * @details Implements PWM timer and channel configuration using ESP32 LEDC
+ */
+
 #include "pwm.h"
 #include "driver/ledc.h"
 #include "esp_err.h"
@@ -7,6 +13,11 @@
 #define SERVO_PWM_FREQ 50
 #define SERVO_PWM_RESOLUTION LEDC_TIMER_16_BIT
 
+/**
+ * @brief Initialize PWM timer for servo control
+ * @details Configures LEDC timer with 50Hz frequency for standard servo operation
+ * @return void
+ */
 void init_pwm_timer()
 {
   ledc_timer_config_t timer_config = {
@@ -19,6 +30,11 @@ void init_pwm_timer()
   ESP_ERROR_CHECK(ledc_timer_config(&timer_config));
 }
 
+/**
+ * @brief Initialize PWM channel for a specific servo
+ * @param[in,out] servo Pointer to Servo object to configure
+ * @return void
+ */
 void init_pwm_channel(Servo *servo)
 {
   ledc_channel_config_t channel_config = {
