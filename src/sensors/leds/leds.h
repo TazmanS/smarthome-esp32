@@ -43,7 +43,7 @@ void LED_toggle(LED *led);
  */
 void init_leds();
 
-extern LED DOOR_LED;
-extern LED ROOF_LED;
+extern LED door_led;
+extern LED roof_led;
 
 #endif

@@ -11,6 +11,7 @@
 #include "modules/mqtt/mqtt.h"
 #include "modules/adc/adc.h"
 #include "modules/my_i2c/my_i2c.h"
+#include "modules/pwm/pwm.h"
 
 #include "config/secrets/secrets.h"
 #include "tasks/tasks.h"
@@ -18,6 +19,8 @@
 #include "sensors/lcd1602/lcd1602.h"
 #include "sensors/leds/leds.h"
 #include "sensors/pir_motion/pir_motion.h"
+#include "sensors/servo/servo.h"
+
 #include "interrupts/buttons/buttons.h"
 
 /**
@@ -43,9 +46,9 @@ void app_main(void)
     ret = nvs_flash_init();
   }
   ESP_ERROR_CHECK(ret);
-  wifi_init_sta(WIFI_SSID, WIFI_PASS);
+  // wifi_init_sta(WIFI_SSID, WIFI_PASS);
 
-  mqtt_app_start();
+  // mqtt_app_start();
 
   i2c_init();
 
@@ -56,6 +59,10 @@ void app_main(void)
   buttons_interrupt_init();
 
   pir_motion_init();
+
+  init_pwm_timer();
+  // init_servo();
+  init_pwm_channel(&window_servo);
 
   tasks_init();
 }

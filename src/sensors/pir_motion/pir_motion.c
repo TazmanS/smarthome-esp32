@@ -23,7 +23,8 @@ void IRAM_ATTR pir_motion_callback(void *arg)
   uint64_t now = esp_timer_get_time();
   if (now - last_toggle_time_us > PIR_DEBOUNCE_TIME_US)
   {
-    LED_on(&DOOR_LED);
+    LED_on(&door_led);
+    last_toggle_time_us = now;
   }
 }
 

@@ -9,8 +9,8 @@
 #include "config/pins/pins.h"
 #include "esp_timer.h"
 
-LED DOOR_LED;
-LED ROOF_LED;
+LED door_led;
+LED roof_led;
 
 #define LED_DEBOUNCE_TIME_US 200000
 
@@ -83,6 +83,6 @@ void LED_toggle(LED *led)
  */
 void init_leds()
 {
-  LED_init(&DOOR_LED, DOOR_LED_PIN);
-  LED_init(&ROOF_LED, ROOF_LED_PIN);
+  LED_init(&door_led, DOOR_LED_PIN);
+  LED_init(&roof_led, ROOF_LED_PIN);
 }
