@@ -7,6 +7,13 @@
 #ifndef DISPLAY_TASK_H
 #define DISPLAY_TASK_H
 
+typedef enum
+{
+  DISPLAY_GREETINGS,
+  DISPLAY_TEMPERATURE,
+  DISPLAY_PHOTOCELL
+} DisplayScreenState;
+
 /**
  * @brief Display task function
  * @details Receives temperature samples and updates the LCD accordingly

@@ -11,10 +11,14 @@
 
 /** LM35 analog sensor pin */
 extern const gpio_num_t LM35_PIN;
+/** Photocell analog sensor pin */
+extern const gpio_num_t PHOTOCELL_PIN;
+
 /** I2C SDA pin */
 extern const gpio_num_t I2C_SDA_PIN;
 /** I2C SCL pin */
 extern const gpio_num_t I2C_SCL_PIN;
+
 /** Door LED pin */
 extern const gpio_num_t DOOR_LED_PIN;
 /** Roof LED pin */

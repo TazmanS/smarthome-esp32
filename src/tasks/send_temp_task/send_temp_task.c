@@ -4,7 +4,7 @@
  * @details Implements FreeRTOS task for temperature sensing and MQTT transmission
  */
 
-#include "send_temp.h"
+#include "send_temp_task.h"
 #include "tasks/tasks.h"
 #include "freertos/FreeRTOS.h"
 #include "esp_log.h"

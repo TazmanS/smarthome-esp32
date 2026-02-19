@@ -10,21 +10,26 @@
 #include "esp_adc/adc_cali_scheme.h"
 #include "esp_log.h"
 
+adc_oneshot_unit_handle_t adc_handle;
+
 /**
  * @brief Initializes ADC hardware
  * @details Configures ADC channels and sampling parameters for sensor readings
  * @return void
  */
-void adc_init(ADC_MODULE *adc_module)
+void adc_init()
 {
-  adc_oneshot_unit_init_cfg_t adc_unit_conf = {
-      .unit_id = adc_module->unit,
-  };
-  ESP_ERROR_CHECK(adc_oneshot_new_unit(&adc_unit_conf, &(adc_module->adc_handle)));
+    adc_oneshot_unit_init_cfg_t adc_unit_conf = {
+        .unit_id = ADC_UNIT_1,
+    };
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&adc_unit_conf, &adc_handle));
+}
 
-  adc_oneshot_chan_cfg_t adc_chan_cong = {
-      .bitwidth = adc_module->bitwidth,
-      .atten = adc_module->attenuation,
-  };
-  ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_module->adc_handle, adc_module->channel, &adc_chan_cong));
+void adc_init_channel(ADC_MODULE *adc_module)
+{
+    adc_oneshot_chan_cfg_t adc_chan_cong = {
+        .bitwidth = adc_module->bitwidth,
+        .atten = adc_module->attenuation,
+    };
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_handle, adc_module->channel, &adc_chan_cong));
 }

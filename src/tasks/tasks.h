@@ -20,6 +20,7 @@ void tasks_init(void);
 extern QueueHandle_t mqttQueue;
 extern QueueHandle_t logQueue;
 extern QueueHandle_t tempStoreQueue;
+extern QueueHandle_t displayQueue;
 
 /**
  * @brief Structure to hold sensor data

@@ -1,0 +1,4 @@
+#ifndef SEND_PHOTOCELL_TASK_H
+#define SEND_PHOTOCELL_TASK_H
+
+#endif

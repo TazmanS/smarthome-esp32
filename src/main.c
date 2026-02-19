@@ -11,6 +11,7 @@
 #include "modules/mqtt/mqtt.h"
 #include "modules/my_i2c/my_i2c.h"
 #include "modules/pwm/pwm.h"
+#include "modules/adc/adc.h"
 
 #include "config/secrets/secrets.h"
 #include "tasks/tasks.h"
@@ -20,6 +21,7 @@
 #include "sensors/pir_motion/pir_motion.h"
 #include "sensors/servo/servo.h"
 #include "sensors/lm35/lm35.h"
+#include "sensors/photocell/photocell.h"
 
 #include "interrupts/buttons/buttons.h"
 
@@ -48,7 +50,11 @@ void app_main(void)
 
   // mqtt_app_start();
 
+  adc_init();
+
   init_lm35();
+
+  init_photocell();
 
   i2c_init();
 
