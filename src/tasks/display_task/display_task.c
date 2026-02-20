@@ -23,13 +23,12 @@ void display_task(void *pvParameters)
   vTaskDelay(pdMS_TO_TICKS(100));
 
   float temp;
-  // int photocell = photocell_read_light_level();
+  int photocell;
 
   while (1)
   {
-    int photocell = photocell_read_light_level();
     xQueueReceive(tempStoreQueue, &temp, portMAX_DELAY);
-    // xQueueReceive(photoCellStoreQueue, &photocell, portMAX_DELAY);
+    xQueueReceive(photoCellStoreQueue, &photocell, portMAX_DELAY);
 
     DisplayScreenState currentState = DISPLAY_PHOTOCELL;
     DisplayScreenState newState;

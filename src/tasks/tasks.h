@@ -21,6 +21,7 @@ extern QueueHandle_t mqttQueue;
 extern QueueHandle_t logQueue;
 extern QueueHandle_t tempStoreQueue;
 extern QueueHandle_t displayQueue;
+extern QueueHandle_t photoCellStoreQueue;
 
 /**
  * @brief Structure to hold sensor data
