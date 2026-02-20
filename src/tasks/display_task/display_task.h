@@ -21,5 +21,6 @@ typedef enum
  * @return void
  */
 void display_task(void *pvParameters);
+void next_display_screen_state();
 
 #endif

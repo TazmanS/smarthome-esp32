@@ -24,6 +24,7 @@
 #include "sensors/photocell/photocell.h"
 
 #include "interrupts/buttons/buttons.h"
+#include "interrupts/timers/timers.h"
 
 /**
  * @brief Main application entry point
@@ -63,6 +64,8 @@ void app_main(void)
   init_leds();
 
   buttons_interrupt_init();
+
+  timers_interrupt_init();
 
   pir_motion_init();
 

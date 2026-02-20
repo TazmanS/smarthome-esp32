@@ -12,6 +12,9 @@
 #include "sensors/lcd1602/lcd1602.h"
 #include "sensors/photocell/photocell.h"
 
+static DisplayScreenState currentState = DISPLAY_GREETINGS;
+static DisplayScreenState newState;
+
 /**
  * @brief FreeRTOS task that updates the display with the latest temperature
  * @param[in] pvParameters Task parameters (unused)
@@ -30,13 +33,11 @@ void display_task(void *pvParameters)
     xQueueReceive(tempStoreQueue, &temp, portMAX_DELAY);
     xQueueReceive(photoCellStoreQueue, &photocell, portMAX_DELAY);
 
-    DisplayScreenState currentState = DISPLAY_PHOTOCELL;
-    DisplayScreenState newState;
-
     if (xQueueReceive(displayQueue, &newState, 0))
     {
       currentState = newState;
       lcd1602_clear();
+      vTaskDelay(pdMS_TO_TICKS(100));
     }
 
     switch (currentState)
@@ -76,4 +77,10 @@ void set_display_screen_state(DisplayScreenState newState)
   {
     xQueueOverwrite(displayQueue, &newState);
   }
+}
+
+void next_display_screen_state()
+{
+  newState = (currentState + 1) % 3;
+  xQueueOverwrite(displayQueue, &newState);
 }
