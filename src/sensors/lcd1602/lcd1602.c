@@ -97,9 +97,9 @@ static void lcd_data(uint8_t data)
  * @param[in] i2c_port I2C port used for the LCD
  * @return void
  */
-void lcd1602_init(i2c_port_t i2c_port)
+void lcd1602_init()
 {
-  lcd_i2c_port = i2c_port;
+  lcd_i2c_port = I2C_NUM_0;
 
   vTaskDelay(pdMS_TO_TICKS(100));
 

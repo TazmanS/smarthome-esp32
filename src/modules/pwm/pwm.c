@@ -35,12 +35,12 @@ void init_pwm_timer()
  * @param[in,out] servo Pointer to Servo object to configure
  * @return void
  */
-void init_pwm_channel(Servo *servo)
+void init_pwm_channel(gpio_num_t gpio_pin, ledc_channel_t channel)
 {
   ledc_channel_config_t channel_config = {
-      .gpio_num = servo->gpio_pin,
+      .gpio_num = gpio_pin,
       .speed_mode = LEDC_LOW_SPEED_MODE,
-      .channel = servo->channel,
+      .channel = channel,
       .intr_type = LEDC_INTR_DISABLE,
       .timer_sel = LEDC_TIMER_0,
       .duty = 0,

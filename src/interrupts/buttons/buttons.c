@@ -9,8 +9,8 @@
 #include "config/pins/pins.h"
 #include "esp_attr.h"
 
-Button door_button;
-Button roof_button;
+button_t door_button;
+button_t roof_button;
 
 /**
  * @brief Initialize a Button object and register ISR
@@ -20,7 +20,7 @@ Button roof_button;
  * @param[in] arg Argument passed to callback
  * @return void
  */
-void Button_init(Button *btn, gpio_num_t pin, void (*callback)(void *), void *arg)
+void Button_init(button_t *btn, gpio_num_t pin, void (*callback)(void *), void *arg)
 {
   btn->pin = pin;
   btn->callback = callback;
@@ -44,7 +44,7 @@ void Button_init(Button *btn, gpio_num_t pin, void (*callback)(void *), void *ar
  */
 void IRAM_ATTR button_pressed(void *arg)
 {
-  LED *led = (LED *)arg;
+  led_t *led = (led_t *)arg;
   LED_toggle(led);
 }
 

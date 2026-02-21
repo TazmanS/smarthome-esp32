@@ -16,13 +16,13 @@ typedef struct
 {
   gpio_num_t gpio_pin;    /**< GPIO pin connected to servo signal */
   ledc_channel_t channel; /**< LEDC channel assigned to servo */
-} Servo;
+} servo_t;
 
 /**
- * @brief Initialize servo system
+ * @brief Initialize servos system
  * @return void
  */
-void init_servo();
+void init_servos();
 
 /**
  * @brief Set servo angle
@@ -30,8 +30,8 @@ void init_servo();
  * @param[in] angle Angle in degrees (0-180)
  * @return void
  */
-void set_servo_angle(Servo *servo, int angle);
+void set_servo_angle(servo_t *servo, int angle);
 
-extern Servo window_servo;
+extern servo_t window_servo;
 
 #endif

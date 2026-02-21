@@ -15,7 +15,7 @@
  * @param[in] i2c_port I2C port used for the LCD
  * @return void
  */
-void lcd1602_init(i2c_port_t i2c_port);
+void lcd1602_init();
 /**
  * @brief Clear LCD display
  * @return void

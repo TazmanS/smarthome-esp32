@@ -17,33 +17,33 @@ typedef struct
   gpio_num_t pin;
   bool state;
   int64_t last_toggle_time_us;
-} LED;
+} led_t;
 
 /**
  * @brief Turn LED on
  * @param[in,out] led Pointer to LED object
  * @return void
  */
-void LED_on(LED *led);
+void LED_on(led_t *led);
 /**
  * @brief Turn LED off
  * @param[in,out] led Pointer to LED object
  * @return void
  */
-void LED_off(LED *led);
+void LED_off(led_t *led);
 /**
  * @brief Toggle LED state (with debounce)
  * @param[in,out] led Pointer to LED object
  * @return void
  */
-void LED_toggle(LED *led);
+void LED_toggle(led_t *led);
 /**
  * @brief Initialize application LEDs
  * @return void
  */
 void init_leds();
 
-extern LED door_led;
-extern LED roof_led;
+extern led_t door_led;
+extern led_t roof_led;
 
 #endif

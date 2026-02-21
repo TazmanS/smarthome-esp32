@@ -9,8 +9,8 @@
 #include "config/pins/pins.h"
 #include "esp_timer.h"
 
-LED door_led;
-LED roof_led;
+led_t door_led;
+led_t roof_led;
 
 #define LED_DEBOUNCE_TIME_US 200000
 
@@ -20,7 +20,7 @@ LED roof_led;
  * @param[in] pin GPIO pin used by LED
  * @return void
  */
-void LED_init(LED *led, gpio_num_t pin)
+void LED_init(led_t *led, gpio_num_t pin)
 {
   led->pin = pin;
   led->state = false;
@@ -43,7 +43,7 @@ void LED_init(LED *led, gpio_num_t pin)
  * @param[in,out] led Pointer to LED object
  * @return void
  */
-void LED_on(LED *led)
+void LED_on(led_t *led)
 {
   led->state = true;
   gpio_set_level(led->pin, 1);
@@ -54,7 +54,7 @@ void LED_on(LED *led)
  * @param[in,out] led Pointer to LED object
  * @return void
  */
-void LED_off(LED *led)
+void LED_off(led_t *led)
 {
   led->state = false;
   gpio_set_level(led->pin, 0);
@@ -65,7 +65,7 @@ void LED_off(LED *led)
  * @param[in,out] led Pointer to LED object
  * @return void
  */
-void LED_toggle(LED *led)
+void LED_toggle(led_t *led)
 {
   int64_t now = esp_timer_get_time();
 

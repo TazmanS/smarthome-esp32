@@ -4,7 +4,7 @@
 #include "config/channels/channels.h"
 #include "helpers/sma/sma.h"
 
-ADC_MODULE photocell_adc_module = {};
+adc_module_t photocell_adc_module = {};
 
 #define SMA_WINDOW_SIZE 16
 static int sma_buffer[SMA_WINDOW_SIZE];

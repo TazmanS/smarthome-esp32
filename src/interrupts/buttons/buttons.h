@@ -17,14 +17,14 @@ typedef struct
   gpio_num_t pin;
   void (*callback)(void *);
   void *callback_arg;
-} Button;
+} button_t;
 
 /**
  * @brief Initialize button interrupts
  * @return void
  */
 void buttons_interrupt_init();
-extern Button door_button;
-extern Button roof_button;
+extern button_t door_button;
+extern button_t roof_button;
 
 #endif

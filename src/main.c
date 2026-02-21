@@ -22,6 +22,7 @@
 #include "sensors/servo/servo.h"
 #include "sensors/lm35/lm35.h"
 #include "sensors/photocell/photocell.h"
+#include "sensors/motor/motor.h"
 
 #include "interrupts/buttons/buttons.h"
 #include "interrupts/timers/timers.h"
@@ -59,7 +60,7 @@ void app_main(void)
 
   i2c_init();
 
-  lcd1602_init(I2C_NUM_0);
+  lcd1602_init();
 
   init_leds();
 
@@ -70,8 +71,10 @@ void app_main(void)
   pir_motion_init();
 
   init_pwm_timer();
-  // init_servo();
-  init_pwm_channel(&window_servo);
+
+  init_servos();
+
+  init_motors();
 
   tasks_init();
 }

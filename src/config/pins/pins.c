@@ -20,3 +20,4 @@ const gpio_num_t ROOF_BUTTON_PIN = GPIO_NUM_26; /**< Roof button GPIO */
 const gpio_num_t PIR_MOTION_PIN = GPIO_NUM_27; /**< PIR motion sensor GPIO */
 
 const gpio_num_t WINDOW_SERVO_PIN = GPIO_NUM_18; /**< Window servo GPIO */
+const gpio_num_t FAN_MOTOR_PIN = GPIO_NUM_19;    /**< Fan motor GPIO */

@@ -25,7 +25,7 @@ void adc_init()
     ESP_ERROR_CHECK(adc_oneshot_new_unit(&adc_unit_conf, &adc_handle));
 }
 
-void adc_init_channel(ADC_MODULE *adc_module)
+void adc_init_channel(adc_module_t *adc_module)
 {
     adc_oneshot_chan_cfg_t adc_chan_cong = {
         .bitwidth = adc_module->bitwidth,

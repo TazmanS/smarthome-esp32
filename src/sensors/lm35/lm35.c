@@ -17,7 +17,7 @@
 static int sma_buffer[SMA_WINDOW_SIZE];
 static sma_filter_t lm35_sma;
 
-ADC_MODULE adc_lm35_module = {};
+adc_module_t adc_lm35_module = {};
 
 void init_lm35()
 {

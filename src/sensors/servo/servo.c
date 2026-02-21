@@ -6,8 +6,10 @@
 
 #include "servo.h"
 #include "config/pins/pins.h"
+#include "config/channels/channels.h"
+#include "modules/pwm/pwm.h"
 
-Servo window_servo = {};
+servo_t window_servo = {};
 
 #define SERVO_MIN_PULSEWIDTH_US 500
 #define SERVO_MAX_PULSEWIDTH_US 2500
@@ -36,10 +38,12 @@ static uint32_t servo_angle_to_duty(int angle)
  * @details Sets up the window servo with default pin and channel
  * @return void
  */
-void init_servo()
+static void init_servo(servo_t *servo, gpio_num_t pin, ledc_channel_t channel)
 {
-  window_servo.gpio_pin = WINDOW_SERVO_PIN;
-  window_servo.channel = LEDC_CHANNEL_0;
+  servo->gpio_pin = pin;
+  servo->channel = channel;
+
+  init_pwm_channel(pin, channel);
 }
 
 /**
@@ -48,8 +52,13 @@ void init_servo()
  * @param[in] angle Angle in degrees (0-180)
  * @return void
  */
-void set_servo_angle(Servo *servo, int angle)
+void set_servo_angle(servo_t *servo, int angle)
 {
   ledc_set_duty(LEDC_LOW_SPEED_MODE, servo->channel, servo_angle_to_duty(angle));
   ledc_update_duty(LEDC_LOW_SPEED_MODE, servo->channel);
+}
+
+void init_servos()
+{
+  init_servo(&window_servo, WINDOW_SERVO_PIN, WINDOW_SERVO_CHANNEL);
 }

@@ -16,7 +16,7 @@ typedef struct
   adc_channel_t channel;
   adc_atten_t attenuation;
   adc_bitwidth_t bitwidth;
-} ADC_MODULE;
+} adc_module_t;
 
 extern adc_oneshot_unit_handle_t adc_handle;
 
@@ -26,6 +26,6 @@ extern adc_oneshot_unit_handle_t adc_handle;
  * @return void
  */
 void adc_init();
-void adc_init_channel(ADC_MODULE *adc_module);
+void adc_init_channel(adc_module_t *adc_module);
 
 #endif

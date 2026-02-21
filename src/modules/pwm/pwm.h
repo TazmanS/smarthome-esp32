@@ -20,6 +20,6 @@ void init_pwm_timer();
  * @param[in,out] servo Pointer to Servo object to configure
  * @return void
  */
-void init_pwm_channel(Servo *servo);
+void init_pwm_channel(gpio_num_t gpio_pin, ledc_channel_t channel);
 
 #endif
