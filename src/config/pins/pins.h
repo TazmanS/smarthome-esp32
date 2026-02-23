@@ -23,7 +23,8 @@ extern const gpio_num_t ROOF_BUTTON_PIN; /** Roof button pin */
 
 extern const gpio_num_t PIR_MOTION_PIN; /** PIR motion sensor pin */
 
-extern const gpio_num_t WINDOW_SERVO_PIN; /** Window servo pin */
-extern const gpio_num_t FAN_MOTOR_PIN;    /** Fan motor pin */
+extern const gpio_num_t WINDOW_SERVO_PIN;  /** Window servo pin */
+extern const gpio_num_t FAN_MOTOR_INA_PIN; /**< Fan motor INA GPIO */
+extern const gpio_num_t FAN_MOTOR_INB_PIN; /**< Fan motor INB GPIO */
 
 #endif

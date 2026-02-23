@@ -8,6 +8,7 @@
 #include "config/pins/pins.h"
 #include "config/channels/channels.h"
 #include "modules/pwm/pwm.h"
+#include "config/my_timers/my_timers.h"
 
 servo_t window_servo = {};
 
@@ -43,7 +44,7 @@ static void init_servo(servo_t *servo, gpio_num_t pin, ledc_channel_t channel)
   servo->gpio_pin = pin;
   servo->channel = channel;
 
-  init_pwm_channel(pin, channel);
+  init_pwm_channel(pin, channel, SERVO_WINDOW_TIMER);
 }
 
 /**

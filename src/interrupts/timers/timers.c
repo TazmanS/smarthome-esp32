@@ -1,6 +1,7 @@
 #include "timers.h"
 #include "esp_timer.h"
 #include "tasks/display_task/display_task.h"
+#include "sensors/motor/motor.h"
 
 #define SECONDS_5 5000000   // 5 seconds in microseconds
 #define SECONDS_60 60000000 // 60 seconds in microseconds
@@ -11,15 +12,18 @@ static esp_timer_handle_t motor_off_timer;
 
 void motor_off_callback(void *arg)
 {
+  fan_motor.is_active = false;
+  set_motor_power(&fan_motor, 0);
 }
 
 void motor_on_callback(void *arg)
 {
-  // if (motor_running)
-  //     return;
+  if (fan_motor.is_active)
+    return;
 
-  // motor_running = true;
-  esp_timer_start_once(motor_off_timer, SECONDS_15);
+  fan_motor.is_active = true;
+  set_motor_power(&fan_motor, 100);
+  esp_timer_start_once(motor_off_timer, SECONDS_5);
 }
 
 void display_timer_callback(void *arg)
@@ -49,5 +53,5 @@ void timers_interrupt_init()
   esp_timer_create(&on_timer_args, &motor_on_timer);
   esp_timer_create(&off_timer_args, &motor_off_timer);
 
-  esp_timer_start_periodic(motor_on_timer, SECONDS_60);
+  esp_timer_start_periodic(motor_on_timer, SECONDS_15);
 }
