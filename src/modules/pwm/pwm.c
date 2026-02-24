@@ -15,7 +15,7 @@
  * @details Configures LEDC timer with 50Hz frequency for standard servo operation
  * @return void
  */
-void init_pwm_timer()
+void pwm_init_timer()
 {
   ledc_timer_config_t timer_servo_config = {
       .speed_mode = LEDC_LOW_SPEED_MODE,

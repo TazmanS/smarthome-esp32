@@ -17,7 +17,7 @@ typedef struct
 
 extern motor_t fan_motor;
 
-void init_motors();
+void motors_init();
 void set_motor_power(motor_t *motor, int power);
 
 #endif

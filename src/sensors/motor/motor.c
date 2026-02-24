@@ -33,7 +33,7 @@ static void init_motor(motor_t *motor, gpio_num_t pin_INA, gpio_num_t pin_INB, l
   init_pwm_channel(pin_INB, channel_INB, MOTOR_FAN_TIMER);
 }
 
-void init_motors()
+void motors_init()
 {
   init_motor(&fan_motor, FAN_MOTOR_INA_PIN, FAN_MOTOR_INB_PIN, FAN_MOTOR_INA_CHANNEL, FAN_MOTOR_INB_CHANNEL);
 }

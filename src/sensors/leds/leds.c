@@ -81,7 +81,7 @@ void LED_toggle(led_t *led)
  * @brief Initialize all application LEDs
  * @return void
  */
-void init_leds()
+void leds_init()
 {
   LED_init(&door_led, DOOR_LED_PIN);
   LED_init(&roof_led, ROOF_LED_PIN);

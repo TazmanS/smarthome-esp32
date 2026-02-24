@@ -1,7 +1,7 @@
 #ifndef PHOTOCELL_H
 #define PHOTOCELL_H
 
-void init_photocell();
+void photocell_init();
 int photocell_read_light_level();
 
 #endif

@@ -13,7 +13,7 @@
  * @brief Initialize PWM timer for servo control
  * @return void
  */
-void init_pwm_timer();
+void pwm_init_timer();
 
 /**
  * @brief Initialize PWM channel for a specific servo

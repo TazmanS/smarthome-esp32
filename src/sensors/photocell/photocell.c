@@ -10,7 +10,7 @@ adc_module_t photocell_adc_module = {};
 static int sma_buffer[SMA_WINDOW_SIZE];
 static sma_filter_t photocell_sma;
 
-void init_photocell()
+void photocell_init()
 {
   photocell_adc_module.pin = PHOTOCELL_PIN,
   photocell_adc_module.channel = PHOTOCELL_ADC_CHANNEL,

@@ -59,7 +59,7 @@ void set_servo_angle(servo_t *servo, int angle)
   ledc_update_duty(LEDC_LOW_SPEED_MODE, servo->channel);
 }
 
-void init_servos()
+void servos_init()
 {
   init_servo(&window_servo, WINDOW_SERVO_PIN, WINDOW_SERVO_CHANNEL);
 }

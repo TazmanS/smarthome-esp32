@@ -5,27 +5,11 @@
  *          MQTT client, and task management system.
  */
 
-#include "nvs_flash.h"
-
-#include "modules/wifi/wifi.h"
-#include "modules/mqtt/mqtt.h"
-#include "modules/my_i2c/my_i2c.h"
-#include "modules/pwm/pwm.h"
-#include "modules/adc/adc.h"
-
-#include "config/secrets/secrets.h"
+#include "helpers/nvs/nvs.h"
+#include "modules/modules.h"
+#include "sensors/sensors.h"
+#include "interrupts/interrupts.h"
 #include "tasks/tasks.h"
-
-#include "sensors/lcd1602/lcd1602.h"
-#include "sensors/leds/leds.h"
-#include "sensors/pir_motion/pir_motion.h"
-#include "sensors/servo/servo.h"
-#include "sensors/lm35/lm35.h"
-#include "sensors/photocell/photocell.h"
-#include "sensors/motor/motor.h"
-
-#include "interrupts/buttons/buttons.h"
-#include "interrupts/timers/timers.h"
 
 /**
  * @brief Main application entry point
@@ -41,40 +25,13 @@
  */
 void app_main(void)
 {
-  esp_err_t ret = nvs_flash_init();
-  if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
-  {
-    ESP_ERROR_CHECK(nvs_flash_erase());
-    ret = nvs_flash_init();
-  }
-  ESP_ERROR_CHECK(ret);
-  // wifi_init_sta(WIFI_SSID, WIFI_PASS);
+  nvs_init();
 
-  // mqtt_app_start();
+  modules_init();
 
-  adc_init();
+  sensors_init();
 
-  init_lm35();
-
-  init_photocell();
-
-  i2c_init();
-
-  lcd1602_init();
-
-  init_leds();
-
-  buttons_interrupt_init();
-
-  timers_interrupt_init();
-
-  pir_motion_init();
-
-  init_pwm_timer();
-
-  init_servos();
-
-  init_motors();
+  interrupts_init();
 
   tasks_init();
 }

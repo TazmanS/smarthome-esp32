@@ -41,7 +41,7 @@ void LED_toggle(led_t *led);
  * @brief Initialize application LEDs
  * @return void
  */
-void init_leds();
+void leds_init();
 
 extern led_t door_led;
 extern led_t roof_led;

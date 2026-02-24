@@ -19,7 +19,7 @@ static sma_filter_t lm35_sma;
 
 adc_module_t adc_lm35_module = {};
 
-void init_lm35()
+void lm35_init()
 {
   adc_lm35_module.pin = LM35_PIN,
   adc_lm35_module.channel = LM35_ADC_CHANNEL,

@@ -22,7 +22,7 @@ typedef struct
  * @brief Initialize servos system
  * @return void
  */
-void init_servos();
+void servos_init();
 
 /**
  * @brief Set servo angle
