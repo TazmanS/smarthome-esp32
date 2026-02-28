@@ -27,4 +27,6 @@ extern const gpio_num_t WINDOW_SERVO_PIN;  /** Window servo pin */
 extern const gpio_num_t FAN_MOTOR_INA_PIN; /**< Fan motor INA GPIO */
 extern const gpio_num_t FAN_MOTOR_INB_PIN; /**< Fan motor INB GPIO */
 
+extern const gpio_num_t IR_RECEIVER_PIN; /**< IR receiver GPIO */
+
 #endif

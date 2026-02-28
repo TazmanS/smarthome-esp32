@@ -30,10 +30,10 @@ void display_task(void *pvParameters)
 
   while (1)
   {
-    xQueueReceive(tempStoreQueue, &temp, portMAX_DELAY);
-    xQueueReceive(photoCellStoreQueue, &photocell, portMAX_DELAY);
+    xQueueReceive(temp_store_queue, &temp, portMAX_DELAY);
+    xQueueReceive(photo_cell_store_queue, &photocell, portMAX_DELAY);
 
-    if (xQueueReceive(displayQueue, &newState, 0))
+    if (xQueueReceive(display_queue, &newState, 0))
     {
       currentState = newState;
       lcd1602_clear();
@@ -73,14 +73,14 @@ void display_task(void *pvParameters)
 
 void set_display_screen_state(DisplayScreenState newState)
 {
-  if (displayQueue != NULL)
+  if (display_queue != NULL)
   {
-    xQueueOverwrite(displayQueue, &newState);
+    xQueueOverwrite(display_queue, &newState);
   }
 }
 
 void next_display_screen_state()
 {
   newState = (currentState + 1) % 3;
-  xQueueOverwrite(displayQueue, &newState);
+  xQueueOverwrite(display_queue, &newState);
 }

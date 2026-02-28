@@ -19,7 +19,7 @@ void mqtt_task(void *pvParameters)
   while (1)
   {
     sensor_data_t data;
-    if (xQueueReceive(mqttQueue, &data, portMAX_DELAY))
+    if (xQueueReceive(mqtt_queue, &data, portMAX_DELAY))
     {
       char buf[64];
       snprintf(buf, sizeof(buf), "{\"%s\": %.2f}", data.key, data.value);

@@ -17,11 +17,12 @@
  */
 void tasks_init(void);
 
-extern QueueHandle_t mqttQueue;
-extern QueueHandle_t logQueue;
-extern QueueHandle_t tempStoreQueue;
-extern QueueHandle_t displayQueue;
-extern QueueHandle_t photoCellStoreQueue;
+extern QueueHandle_t mqtt_queue;
+extern QueueHandle_t log_queue;
+extern QueueHandle_t temp_store_queue;
+extern QueueHandle_t display_queue;
+extern QueueHandle_t photo_cell_store_queue;
+extern QueueHandle_t ir_queue;
 
 /**
  * @brief Structure to hold sensor data

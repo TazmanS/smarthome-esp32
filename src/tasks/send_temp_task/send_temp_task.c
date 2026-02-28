@@ -29,11 +29,11 @@ void send_temp_task(void *pvParameters)
     strcpy(data.key, "sensor/temperature");
     data.value = temp;
 
-    xQueueSend(mqttQueue, &data, portMAX_DELAY);
+    xQueueSend(mqtt_queue, &data, portMAX_DELAY);
 
-    xQueueSend(logQueue, &data, portMAX_DELAY);
+    xQueueSend(log_queue, &data, portMAX_DELAY);
 
-    xQueueOverwrite(tempStoreQueue, &temp);
+    xQueueOverwrite(temp_store_queue, &temp);
 
     // TODO take delay from env
     vTaskDelay(pdMS_TO_TICKS(1000));

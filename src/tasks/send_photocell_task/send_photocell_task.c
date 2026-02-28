@@ -17,11 +17,11 @@ void send_photocell_task(void *pvParameters)
     strcpy(data.key, "sensor/photocell");
     data.value = (float)light;
 
-    xQueueSend(mqttQueue, &data, portMAX_DELAY);
+    xQueueSend(mqtt_queue, &data, portMAX_DELAY);
 
-    xQueueSend(logQueue, &data, portMAX_DELAY);
+    xQueueSend(log_queue, &data, portMAX_DELAY);
 
-    xQueueOverwrite(photoCellStoreQueue, &light);
+    xQueueOverwrite(photo_cell_store_queue, &light);
 
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
