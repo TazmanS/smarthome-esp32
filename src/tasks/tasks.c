@@ -55,10 +55,11 @@ void tasks_init(void)
 {
   mqtt_queue = xQueueCreate(10, sizeof(sensor_data_t));
   log_queue = xQueueCreate(10, sizeof(sensor_data_t));
-  display_queue = xQueueCreate(1, sizeof(DisplayScreenState));
+  display_queue = xQueueCreate(1, sizeof(display_screen_state_t));
+  ir_queue = xQueueCreate(5, sizeof(ir_button_t));
+
   temp_store_queue = xQueueCreate(1, sizeof(float));
   photo_cell_store_queue = xQueueCreate(1, sizeof(int));
-  ir_queue = xQueueCreate(5, sizeof(ir_button_t));
 
   configASSERT(mqtt_queue != NULL);
   configASSERT(log_queue != NULL);
@@ -67,9 +68,9 @@ void tasks_init(void)
   configASSERT(photo_cell_store_queue != NULL);
   configASSERT(ir_queue != NULL);
 
-  // configASSERT(xTaskCreate(send_temp_task, "SendTempTask", send_temp_task_stack_size, NULL, send_temp_task_priority, NULL) == pdPASS);
-  // configASSERT(xTaskCreate(send_photocell_task, "SendPhotoCellTask", send_photocell_task_stack_size, NULL, send_photocell_task_priority, NULL) == pdPASS);
-  // configASSERT(xTaskCreate(display_task, "DisplayTask", display_task_stack_size, NULL, display_task_priority, NULL) == pdPASS);
+  configASSERT(xTaskCreate(send_temp_task, "SendTempTask", send_temp_task_stack_size, NULL, send_temp_task_priority, NULL) == pdPASS);
+  configASSERT(xTaskCreate(send_photocell_task, "SendPhotoCellTask", send_photocell_task_stack_size, NULL, send_photocell_task_priority, NULL) == pdPASS);
+  configASSERT(xTaskCreate(display_task, "DisplayTask", display_task_stack_size, NULL, display_task_priority, NULL) == pdPASS);
   configASSERT(xTaskCreate(ir_task, "IrTask", ir_task_stack_size, NULL, ir_task_priority, NULL) == pdPASS);
 
   configASSERT(xTaskCreate(log_task, "LogTask", log_task_stack_size, NULL, log_task_priority, NULL) == pdPASS);

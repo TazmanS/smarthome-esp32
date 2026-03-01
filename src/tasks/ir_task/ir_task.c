@@ -1,5 +1,6 @@
 #include "ir_task.h"
 #include "tasks/tasks.h"
+#include "tasks/display_task/display_task.h"
 #include "sensors/ir_receiver/ir_receiver.h"
 #include "esp_log.h"
 
@@ -13,7 +14,7 @@ void ir_task(void *pvParameters)
     {
       ESP_LOGI("IR TASK", "IR CODE = %s", ir_get_code_to_string(code));
 
-      // Тут любая логика
+      display_process_code(code);
     }
   }
 }

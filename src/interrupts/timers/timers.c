@@ -7,8 +7,11 @@
 #define SECONDS_60 60000000 // 60 seconds in microseconds
 #define SECONDS_15 15000000 // 15 seconds in microseconds
 
+#define DISPLAY_TIMER_PERIOD SECONDS_5
+
 static esp_timer_handle_t motor_on_timer;
 static esp_timer_handle_t motor_off_timer;
+static esp_timer_handle_t display_timer;
 
 void motor_off_callback(void *arg)
 {
@@ -31,17 +34,28 @@ void display_timer_callback(void *arg)
   next_display_screen_state();
 }
 
+void display_timer_off()
+{
+  esp_timer_stop(display_timer);
+}
+
+void display_timer_on()
+{
+  esp_timer_start_periodic(display_timer, DISPLAY_TIMER_PERIOD);
+}
+
 void timers_interrupt_init()
 {
+  // DISPLAY
   const esp_timer_create_args_t timer_config = {
       .callback = &display_timer_callback,
       .name = "display_timer_interrupt"};
 
-  esp_timer_handle_t timer;
-  esp_timer_create(&timer_config, &timer);
+  esp_timer_create(&timer_config, &display_timer);
 
-  esp_timer_start_periodic(timer, SECONDS_5);
+  esp_timer_start_periodic(display_timer, DISPLAY_TIMER_PERIOD);
 
+  // MOTORS
   const esp_timer_create_args_t on_timer_args = {
       .callback = &motor_on_callback,
       .name = "motor_on"};

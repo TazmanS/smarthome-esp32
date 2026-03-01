@@ -3,4 +3,7 @@
 
 void timers_interrupt_init();
 
+void display_timer_off();
+void display_timer_on();
+
 #endif
