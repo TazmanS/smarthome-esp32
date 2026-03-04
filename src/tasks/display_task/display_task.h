@@ -10,53 +10,62 @@
 #include <stdbool.h>
 #include "sensors/ir_receiver/ir_receiver.h"
 
-typedef enum
-{
-  DISPLAY_GREETINGS,
-  DISPLAY_TEMPERATURE,
-  DISPLAY_PHOTOCELL
-} display_screen_state_t;
+/* ________________________________________ */
 
 typedef enum
 {
-  MAIN_MENU,
-  FAN_MOTOR_MENU,
-  DOOR_LED_MENU,
-  WINDOW_LED_MENU
-} display_menu_state_t;
+  SCREEN_COMMON_HOME,
+  SCREEN_COMMON_TEMPERATURE,
+  SCREEN_COMMON_PHOTOCELL
+} display_screen_common_state_t;
 
-typedef void (*menu_action_t)(void);
+typedef enum
+{
+  SCREEN_MENU_HOME,
+  SCREEN_MENU_FAN_MOTOR,
+  SCREEN_MENU_DOOR_LED,
+  SCREEN_MENU_WINDOW_LED
+} display_screen_menu_state_t;
+
+typedef enum
+{
+  SCREEN_COMMON,
+  SCREEN_MENU
+} display_screen_type_t;
 
 typedef struct
 {
-  ir_button_t code;
-  display_menu_state_t menu_state;
-  menu_action_t action_left;
-  menu_action_t action_right;
-} display_menu_item_t;
+  display_screen_type_t type;
+  union
+  {
+    display_screen_common_state_t common;
+    display_screen_menu_state_t menu;
+  };
+} display_screen_state_t;
+
+/* ________________________________________ */
 
 typedef struct
 {
   display_screen_state_t current_state;
-  display_menu_state_t current_menu_state;
-  bool is_menu_open;
 } display_config_t;
 
-// typedef enum
-// {
-//   DISPLAY_EVENT_SCREEN,
-//   DISPLAY_EVENT_MENU
-// } display_event_type_t;
+/* ________________________________________ */
 
-// typedef struct
-// {
-//   display_event_type_t type;
-//   union
-//   {
-//     display_screen_state_t screen;
-//     display_menu_state_t menu;
-//   };
-// } display_event_t;
+typedef enum
+{
+  EVENT_SHOW_HOME_SCREEN,
+  EVENT_NEXT_COMMON_SCREEN,
+  EVENT_PREV_COMMON_SCREEN,
+  EVENT_SHOW_MENU_HOME_SCREEN,
+  EVENT_NEXT_MENU_SCREEN,
+  EVENT_PREV_MENU_SCREEN,
+
+  EVENT_PROCESS_IR_CODE,
+  EVENT_TIMER_INTERRUPT
+} display_screen_event_t;
+
+/* ________________________________________ */
 
 /**
  * @brief Display task function
@@ -65,7 +74,6 @@ typedef struct
  * @return void
  */
 void display_task(void *pvParameters);
-void next_display_screen_state();
-void display_process_code(ir_button_t code);
+void display_event_handler(display_screen_event_t event, ir_button_t code);
 
 #endif

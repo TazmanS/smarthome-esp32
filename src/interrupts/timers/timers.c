@@ -31,7 +31,7 @@ void motor_on_callback(void *arg)
 
 void display_timer_callback(void *arg)
 {
-  next_display_screen_state();
+  display_event_handler(EVENT_TIMER_INTERRUPT, IR_CODE_NULL);
 }
 
 void display_timer_off()

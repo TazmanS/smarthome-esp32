@@ -14,7 +14,7 @@ void ir_task(void *pvParameters)
     {
       ESP_LOGI("IR TASK", "IR CODE = %s", ir_get_code_to_string(code));
 
-      display_process_code(code);
+      display_event_handler(EVENT_PROCESS_IR_CODE, code);
     }
   }
 }
