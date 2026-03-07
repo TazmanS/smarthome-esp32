@@ -5,4 +5,5 @@
 .vscode/ipch
 
 /src/secrets/secrets.c
-docs
+docs/doxygen/html/
+docs/doxygen/latex/

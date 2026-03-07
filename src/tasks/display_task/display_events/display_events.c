@@ -12,7 +12,12 @@
 #include "interrupts/timers/timers.h"
 
 static void event_timer_interrupt_handler(display_config_t *display_config);
-static void event_ir_receiver_start_handler(display_config_t *display_config, ir_button_t code);
+static void event_ir_receiver_start_menu_handler(display_config_t *display_config, ir_button_t code);
+static void event_ir_receiver_code_up(display_screen_state_t *new_state);
+static void event_ir_receiver_code_down(display_screen_state_t *new_state);
+static void event_ir_receiver_code_left(display_screen_state_t *new_state);
+static void event_ir_receiver_code_right(display_screen_state_t *new_state);
+static void event_ir_receiver_code_ok(display_screen_state_t *new_state);
 static void event_ir_receiver_menu_handler(display_config_t *display_config, ir_button_t code);
 
 void display_events_handler(display_event_t event, display_config_t *display_config)
@@ -27,9 +32,7 @@ void display_events_handler(display_event_t event, display_config_t *display_con
   if (event.type == EVENT_PROCESS_IR_CODE && event.ir_receiver.code == IR_CODE_OK && display_config->current_state.type == SCREEN_COMMON)
   {
     // Enter menu on OK button press from common screen
-    event_ir_receiver_start_handler(display_config, event.ir_receiver.code);
-    motor_timer_stop(); // Stop motor timer when entering menu
-    motor_turn_off(&motor_fan);
+    event_ir_receiver_start_menu_handler(display_config, event.ir_receiver.code);
     return;
   }
 
@@ -48,7 +51,7 @@ static void event_timer_interrupt_handler(display_config_t *display_config)
   xQueueOverwrite(display_queue, &new_state);
 }
 
-static void event_ir_receiver_start_handler(display_config_t *display_config, ir_button_t code)
+static void event_ir_receiver_start_menu_handler(display_config_t *display_config, ir_button_t code)
 {
   if (code == IR_CODE_OK && display_config->current_state.type == SCREEN_COMMON)
   {
@@ -56,8 +59,94 @@ static void event_ir_receiver_start_handler(display_config_t *display_config, ir
         .type = SCREEN_MENU,
         .menu = SCREEN_MENU_HOME};
     xQueueOverwrite(display_queue, &new_state);
+    motor_timer_stop(); // Stop motor timer when entering menu
+    motor_turn_off(&motor_fan);
     return;
   }
+}
+
+static void event_ir_receiver_code_up(display_screen_state_t *new_state)
+{
+  new_state->menu = (new_state->menu - 1 + SCREEN_MENU_COUNT) % SCREEN_MENU_COUNT;
+}
+
+static void event_ir_receiver_code_down(display_screen_state_t *new_state)
+{
+  new_state->menu = (new_state->menu + 1) % SCREEN_MENU_COUNT;
+}
+
+static void event_ir_receiver_code_left(display_screen_state_t *new_state)
+{
+  if (new_state->menu == SCREEN_MENU_FAN_MOTOR)
+  {
+    motor_set_power(&motor_fan, motor_fan.power - 10);
+    motor_turn_on(&motor_fan);
+  }
+  else if (new_state->menu == SCREEN_MENU_DOOR_LED)
+  {
+    led_door.state = (led_door.state + 1) % LED_STATE_COUNT;
+    if (led_door.state == LED_ON)
+    {
+      LED_on(&led_door);
+    }
+    else if (led_door.state == LED_OFF)
+    {
+      LED_off(&led_door);
+    }
+  }
+  else if (new_state->menu == SCREEN_MENU_ROOF_LED)
+  {
+    led_roof.state = (led_roof.state + 1) % LED_STATE_COUNT;
+    if (led_roof.state == LED_ON)
+    {
+      LED_on(&led_roof);
+    }
+    else if (led_roof.state == LED_OFF)
+    {
+      LED_off(&led_roof);
+    }
+  }
+}
+
+static void event_ir_receiver_code_right(display_screen_state_t *new_state)
+{
+  if (new_state->menu == SCREEN_MENU_FAN_MOTOR)
+  {
+    motor_set_power(&motor_fan, motor_fan.power + 10);
+    motor_turn_on(&motor_fan);
+  }
+  else if (new_state->menu == SCREEN_MENU_DOOR_LED)
+  {
+    led_door.state = (led_door.state + 1) % LED_STATE_COUNT;
+    if (led_door.state == LED_ON)
+    {
+      LED_on(&led_door);
+    }
+    else if (led_door.state == LED_OFF)
+    {
+      LED_off(&led_door);
+    }
+  }
+  else if (new_state->menu == SCREEN_MENU_ROOF_LED)
+  {
+    led_roof.state = (led_roof.state + 1) % LED_STATE_COUNT;
+    if (led_roof.state == LED_ON)
+    {
+      LED_on(&led_roof);
+    }
+    else if (led_roof.state == LED_OFF)
+    {
+      LED_off(&led_roof);
+    }
+  }
+}
+
+static void event_ir_receiver_code_ok(display_screen_state_t *new_state)
+{
+  new_state->type = SCREEN_COMMON;
+  new_state->common = SCREEN_COMMON_HOME; // Return to home screen after exiting menu
+  motor_timer_start();                    // Restart motor timer when exiting menu
+  motor_turn_off(&motor_fan);
 }
 
 static void event_ir_receiver_menu_handler(display_config_t *display_config, ir_button_t code)
@@ -72,78 +161,19 @@ static void event_ir_receiver_menu_handler(display_config_t *display_config, ir_
   switch (code)
   {
   case IR_CODE_UP:
-    new_state.menu = (new_state.menu - 1 + SCREEN_MENU_COUNT) % SCREEN_MENU_COUNT;
+    event_ir_receiver_code_up(&new_state);
     break;
   case IR_CODE_DOWN:
-    new_state.menu = (new_state.menu + 1) % SCREEN_MENU_COUNT;
+    event_ir_receiver_code_down(&new_state);
     break;
   case IR_CODE_LEFT:
-    if (new_state.menu == SCREEN_MENU_FAN_MOTOR)
-    {
-      motor_set_power(&motor_fan, motor_fan.power - 10);
-      motor_turn_on(&motor_fan);
-    }
-    else if (new_state.menu == SCREEN_MENU_DOOR_LED)
-    {
-      led_door.state = (led_door.state + 1) % LED_STATE_COUNT;
-      if (led_door.state == LED_ON)
-      {
-        LED_on(&led_door);
-      }
-      else if (led_door.state == LED_OFF)
-      {
-        LED_off(&led_door);
-      }
-    }
-    else if (new_state.menu == SCREEN_MENU_ROOF_LED)
-    {
-      led_roof.state = (led_roof.state + 1) % LED_STATE_COUNT;
-      if (led_roof.state == LED_ON)
-      {
-        LED_on(&led_roof);
-      }
-      else if (led_roof.state == LED_OFF)
-      {
-        LED_off(&led_roof);
-      }
-    }
+    event_ir_receiver_code_left(&new_state);
     break;
   case IR_CODE_RIGHT:
-    if (new_state.menu == SCREEN_MENU_FAN_MOTOR)
-    {
-      motor_set_power(&motor_fan, motor_fan.power + 10);
-      motor_turn_on(&motor_fan);
-    }
-    else if (new_state.menu == SCREEN_MENU_DOOR_LED)
-    {
-      led_door.state = (led_door.state + 1) % LED_STATE_COUNT;
-      if (led_door.state == LED_ON)
-      {
-        LED_on(&led_door);
-      }
-      else if (led_door.state == LED_OFF)
-      {
-        LED_off(&led_door);
-      }
-    }
-    else if (new_state.menu == SCREEN_MENU_ROOF_LED)
-    {
-      led_roof.state = (led_roof.state + 1) % LED_STATE_COUNT;
-      if (led_roof.state == LED_ON)
-      {
-        LED_on(&led_roof);
-      }
-      else if (led_roof.state == LED_OFF)
-      {
-        LED_off(&led_roof);
-      }
-    }
+    event_ir_receiver_code_right(&new_state);
     break;
   case IR_CODE_OK:
-    new_state.type = SCREEN_COMMON;
-    new_state.common = SCREEN_COMMON_HOME; // Return to home screen after exiting menu
-    motor_timer_start();                   // Restart motor timer when exiting menu
-    motor_turn_off(&motor_fan);
+    event_ir_receiver_code_ok(&new_state);
     break;
   default:
     break;
