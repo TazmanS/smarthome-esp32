@@ -1,5 +1,17 @@
+/**
+ * @file sma.c
+ * @brief Simple Moving Average filter implementation
+ */
+
 #include "sma.h"
 
+/**
+ * @brief Initialize SMA filter
+ * @param[out] filter Pointer to filter structure
+ * @param[in] buffer Preallocated buffer for samples
+ * @param[in] window_size Number of samples to average
+ * @return void
+ */
 void sma_init(sma_filter_t *filter, int *buffer, int window_size)
 {
   filter->buffer = buffer;
@@ -14,6 +26,12 @@ void sma_init(sma_filter_t *filter, int *buffer, int window_size)
   }
 }
 
+/**
+ * @brief Add a sample to the filter
+ * @param[in,out] filter Pointer to filter structure
+ * @param[in] sample New sample value
+ * @return int Moving average of current window
+ */
 int sma_add_sample(sma_filter_t *filter, int sample)
 {
   if (filter->count == filter->window_size)

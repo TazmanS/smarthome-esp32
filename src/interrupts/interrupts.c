@@ -1,3 +1,8 @@
+/**
+ * @file interrupts.c
+ * @brief Interrupt system initialization implementation
+ */
+
 #include "interrupts.h"
 
 #include "interrupts/buttons/buttons.h"

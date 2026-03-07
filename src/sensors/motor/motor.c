@@ -1,3 +1,8 @@
+/**
+ * @file motor.c
+ * @brief DC motor control implementation
+ */
+
 #include "motor.h"
 #include "modules/pwm/pwm.h"
 #include "config/pins/pins.h"

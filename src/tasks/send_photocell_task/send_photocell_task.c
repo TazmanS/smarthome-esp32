@@ -1,3 +1,8 @@
+/**
+ * @file send_photocell_task.c
+ * @brief Photocell sensor reading task implementation
+ */
+
 #include "send_photocell_task.h"
 #include "tasks/tasks.h"
 #include "freertos/FreeRTOS.h"

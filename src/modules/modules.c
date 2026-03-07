@@ -1,3 +1,8 @@
+/**
+ * @file modules.c
+ * @brief Module initialization implementation
+ */
+
 #include "modules.h"
 
 #include "modules/wifi/wifi.h"

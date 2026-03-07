@@ -1,3 +1,8 @@
+/**
+ * @file sensors.c
+ * @brief Sensor system initialization implementation
+ */
+
 #include "sensors.h"
 
 #include "sensors/lcd1602/lcd1602.h"

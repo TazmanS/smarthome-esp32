@@ -1,3 +1,9 @@
+/**
+ * @file display_events.c
+ * @brief Display event handling implementation
+ * @details Implements event dispatch and state management for display and menu system
+ */
+
 #include "display_events.h"
 #include "tasks/display_task/display_task.h"
 #include "tasks/tasks.h"

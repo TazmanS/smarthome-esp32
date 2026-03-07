@@ -1,3 +1,9 @@
+/**
+ * @file display_screens.c
+ * @brief LCD display screen implementation
+ * @details Implements rendering functions for different display screens
+ */
+
 #include "display_screens.h"
 #include "sensors/lcd1602/lcd1602.h"
 #include "sensors/leds/leds.h"

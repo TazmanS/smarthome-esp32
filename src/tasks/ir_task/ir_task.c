@@ -1,3 +1,8 @@
+/**
+ * @file ir_task.c
+ * @brief Infrared receiver processing task implementation
+ */
+
 #include "ir_task.h"
 #include "tasks/tasks.h"
 #include "tasks/display_task/display_task.h"

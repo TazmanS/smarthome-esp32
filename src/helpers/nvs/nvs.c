@@ -1,7 +1,16 @@
+/**
+ * @file nvs.c
+ * @brief NVS initialization implementation
+ */
+
 #include "nvs.h"
 
 #include "nvs_flash.h"
 
+/**
+ * @brief Initialize NVS flash storage
+ * @return void
+ */
 void nvs_init()
 {
   esp_err_t ret = nvs_flash_init();

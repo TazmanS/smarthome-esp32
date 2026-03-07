@@ -1,3 +1,9 @@
+/**
+ * @file timers.c
+ * @brief Software timer interrupt implementation
+ * @details Implements ESP timer callbacks for display and motor control
+ */
+
 #include "timers.h"
 #include "esp_timer.h"
 #include "tasks/display_task/display_task.h"

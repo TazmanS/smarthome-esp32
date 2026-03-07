@@ -1,3 +1,9 @@
+/**
+ * @file rmt.c
+ * @brief RMT IR receiver implementation
+ * @details Implements RMT registration and IR signal reception
+ */
+
 #include "rmt.h"
 #include "driver/rmt_rx.h"
 #include "esp_log.h"
@@ -21,48 +27,48 @@ static bool rmt_rx_done_callback(
     const rmt_rx_done_event_data_t *edata,
     void *user_ctx)
 {
-  ir_button_t code = ir_get_code(edata->received_symbols, edata->num_symbols);
+    ir_button_t code = ir_get_code(edata->received_symbols, edata->num_symbols);
 
-  if (code != 0)
-  {
-    BaseType_t high_task_wakeup = pdFALSE;
-    xQueueSendFromISR(ir_queue, &code, &high_task_wakeup);
-  }
+    if (code != 0)
+    {
+        BaseType_t high_task_wakeup = pdFALSE;
+        xQueueSendFromISR(ir_queue, &code, &high_task_wakeup);
+    }
 
-  rmt_receive(
-      channel,
-      raw_symbols,
-      sizeof(raw_symbols),
-      &receive_config);
+    rmt_receive(
+        channel,
+        raw_symbols,
+        sizeof(raw_symbols),
+        &receive_config);
 
-  return false;
+    return false;
 }
 
 void rmt_init()
 {
-  rmt_rx_channel_config_t rx_chan_config = {
-      .clk_src = RMT_CLK_SRC_DEFAULT,
-      .gpio_num = PIN_IR_RECEIVER,
-      .resolution_hz = 1000000, // 1 tick = 1 us
-      .mem_block_symbols = 64};
+    rmt_rx_channel_config_t rx_chan_config = {
+        .clk_src = RMT_CLK_SRC_DEFAULT,
+        .gpio_num = PIN_IR_RECEIVER,
+        .resolution_hz = 1000000, // 1 tick = 1 us
+        .mem_block_symbols = 64};
 
-  ESP_ERROR_CHECK(rmt_new_rx_channel(&rx_chan_config, &rx_chan));
+    ESP_ERROR_CHECK(rmt_new_rx_channel(&rx_chan_config, &rx_chan));
 
-  rmt_rx_event_callbacks_t cbs = {
-      .on_recv_done = rmt_rx_done_callback};
+    rmt_rx_event_callbacks_t cbs = {
+        .on_recv_done = rmt_rx_done_callback};
 
-  ESP_ERROR_CHECK(rmt_rx_register_event_callbacks(
-      rx_chan,
-      &cbs,
-      NULL));
+    ESP_ERROR_CHECK(rmt_rx_register_event_callbacks(
+        rx_chan,
+        &cbs,
+        NULL));
 
-  ESP_ERROR_CHECK(rmt_enable(rx_chan));
+    ESP_ERROR_CHECK(rmt_enable(rx_chan));
 
-  ESP_LOGI(TAG, "Waiting for IR signals...");
+    ESP_LOGI(TAG, "Waiting for IR signals...");
 
-  ESP_ERROR_CHECK(rmt_receive(
-      rx_chan,
-      raw_symbols,
-      sizeof(raw_symbols),
-      &receive_config));
+    ESP_ERROR_CHECK(rmt_receive(
+        rx_chan,
+        raw_symbols,
+        sizeof(raw_symbols),
+        &receive_config));
 }

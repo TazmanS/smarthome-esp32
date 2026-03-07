@@ -1,3 +1,9 @@
+/**
+ * @file photocell.c
+ * @brief Photocell sensor implementation
+ * @details Implements photocell sensor reading with SMA filtering
+ */
+
 #include "photocell.h"
 #include "modules/adc/adc.h"
 #include "config/pins/pins.h"

@@ -1,6 +1,19 @@
+/**
+ * @file ir_receiver.c
+ * @brief Infrared receiver implementation
+ * @details Implements NEC protocol decoding and button code recognition
+ */
+
 #include "ir_receiver.h"
 #include "driver/rmt_rx.h"
 
+/**
+ * @internal
+ * @brief Decode NEC IR protocol
+ * @param[in] symbols RMT symbols from receiver
+ * @param[in] count Number of symbols
+ * @return uint32_t Decoded IR code
+ */
 uint32_t decode_nec(const rmt_symbol_word_t *symbols, size_t count)
 {
   if (count < 34)
