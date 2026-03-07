@@ -9,14 +9,24 @@
 
 #include "driver/gpio.h"
 
+#define LED_STATE_COUNT 3
+
+typedef enum
+{
+  LED_OFF,
+  LED_ON,
+  LED_DEFAULT
+} led_state_t;
+
 /**
  * @brief LED object
  */
 typedef struct
 {
   gpio_num_t pin;
-  bool state;
+  bool level;
   int64_t last_toggle_time_us;
+  led_state_t state;
 } led_t;
 
 /**
@@ -43,7 +53,7 @@ void LED_toggle(led_t *led);
  */
 void leds_init();
 
-extern led_t door_led;
-extern led_t roof_led;
+extern led_t led_door;
+extern led_t led_roof;
 
 #endif

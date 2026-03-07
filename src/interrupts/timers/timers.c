@@ -7,6 +7,9 @@
 #define SECONDS_60 60000000 // 60 seconds in microseconds
 #define SECONDS_15 15000000 // 15 seconds in microseconds
 
+#define MOTOR_RUN_TIME SECONDS_5
+#define MOTOR_PERIOD_TIME SECONDS_15
+
 #define DISPLAY_TIMER_PERIOD SECONDS_5
 
 static esp_timer_handle_t motor_on_timer;
@@ -15,23 +18,35 @@ static esp_timer_handle_t display_timer;
 
 void motor_off_callback(void *arg)
 {
-  fan_motor.is_active = false;
-  set_motor_power(&fan_motor, 0);
+  motor_fan.is_active = false;
+  motor_turn_off(&motor_fan);
 }
 
 void motor_on_callback(void *arg)
 {
-  if (fan_motor.is_active)
+  if (motor_fan.is_active)
     return;
 
-  fan_motor.is_active = true;
-  set_motor_power(&fan_motor, 100);
-  esp_timer_start_once(motor_off_timer, SECONDS_5);
+  motor_fan.is_active = true;
+  motor_turn_on(&motor_fan);
+  esp_timer_start_once(motor_off_timer, MOTOR_RUN_TIME);
+}
+
+void motor_timer_stop()
+{
+  esp_timer_stop(motor_on_timer);
+  esp_timer_stop(motor_off_timer);
+}
+
+void motor_timer_start()
+{
+  esp_timer_start_periodic(motor_on_timer, MOTOR_PERIOD_TIME);
 }
 
 void display_timer_callback(void *arg)
 {
-  display_event_handler(EVENT_TIMER_INTERRUPT, IR_CODE_NULL);
+  display_event_t event = {.type = EVENT_TIMER_INTERRUPT};
+  display_event_handler(event);
 }
 
 void display_timer_off()
@@ -67,5 +82,5 @@ void timers_interrupt_init()
   esp_timer_create(&on_timer_args, &motor_on_timer);
   esp_timer_create(&off_timer_args, &motor_off_timer);
 
-  esp_timer_start_periodic(motor_on_timer, SECONDS_15);
+  esp_timer_start_periodic(motor_on_timer, MOTOR_PERIOD_TIME);
 }

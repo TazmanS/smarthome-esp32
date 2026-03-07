@@ -4,11 +4,11 @@
 #include "esp_adc/adc_oneshot.h"
 #include "driver/ledc.h"
 
-extern const adc_channel_t LM35_ADC_CHANNEL;      /** ADC channel for LM35 sensor */
-extern const adc_channel_t PHOTOCELL_ADC_CHANNEL; /** ADC channel for photocell sensor */
+extern const adc_channel_t CHANNEL_ADC_LM35;      /** ADC channel for LM35 sensor */
+extern const adc_channel_t CHANNEL_ADC_PHOTOCELL; /** ADC channel for photocell sensor */
 
-extern const ledc_channel_t WINDOW_SERVO_CHANNEL;  /** LEDC channel for window servo control */
-extern const ledc_channel_t FAN_MOTOR_INA_CHANNEL; /** LEDC channel for fan motor INA control */
-extern const ledc_channel_t FAN_MOTOR_INB_CHANNEL; /** LEDC channel for fan motor INB control */
+extern const ledc_channel_t CHANNEL_SERVO_WINDOW;  /** LEDC channel for window servo control */
+extern const ledc_channel_t CHANNEL_MOTOR_FAN_INA; /** LEDC channel for fan motor INA control */
+extern const ledc_channel_t CHANNEL_MOTOR_FAN_INB; /** LEDC channel for fan motor INB control */
 
 #endif

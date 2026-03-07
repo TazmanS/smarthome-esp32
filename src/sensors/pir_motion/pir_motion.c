@@ -23,7 +23,7 @@ void IRAM_ATTR pir_motion_callback(void *arg)
   uint64_t now = esp_timer_get_time();
   if (now - last_toggle_time_us > PIR_DEBOUNCE_TIME_US)
   {
-    LED_on(&door_led);
+    LED_on(&led_door);
     last_toggle_time_us = now;
   }
 }
@@ -35,7 +35,7 @@ void IRAM_ATTR pir_motion_callback(void *arg)
 void pir_motion_init()
 {
   gpio_config_t io_config = {
-      .pin_bit_mask = (1ULL << PIR_MOTION_PIN),
+      .pin_bit_mask = (1ULL << PIN_PIR_MOTION),
       .mode = GPIO_MODE_INPUT,
       .pull_up_en = GPIO_PULLUP_DISABLE,
       .pull_down_en = GPIO_PULLDOWN_ENABLE,
@@ -43,7 +43,7 @@ void pir_motion_init()
   gpio_config(&io_config);
 
   gpio_install_isr_service(0);
-  gpio_isr_handler_add(PIR_MOTION_PIN, pir_motion_callback, NULL);
+  gpio_isr_handler_add(PIN_PIR_MOTION, pir_motion_callback, NULL);
 }
 
 /**
@@ -52,5 +52,5 @@ void pir_motion_init()
  */
 int get_pir_motion_level()
 {
-  return gpio_get_level(PIR_MOTION_PIN);
+  return gpio_get_level(PIN_PIR_MOTION);
 }

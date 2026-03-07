@@ -12,8 +12,8 @@ static sma_filter_t photocell_sma;
 
 void photocell_init()
 {
-  photocell_adc_module.pin = PHOTOCELL_PIN,
-  photocell_adc_module.channel = PHOTOCELL_ADC_CHANNEL,
+  photocell_adc_module.pin = PIN_PHOTOCELL,
+  photocell_adc_module.channel = CHANNEL_ADC_PHOTOCELL,
   photocell_adc_module.attenuation = ADC_ATTEN_DB_12,
   photocell_adc_module.bitwidth = ADC_BITWIDTH_12,
   adc_init_channel(&photocell_adc_module);

@@ -9,8 +9,8 @@
 #include "config/pins/pins.h"
 #include "esp_timer.h"
 
-led_t door_led;
-led_t roof_led;
+led_t led_door;
+led_t led_roof;
 
 #define LED_DEBOUNCE_TIME_US 200000
 
@@ -23,8 +23,9 @@ led_t roof_led;
 void LED_init(led_t *led, gpio_num_t pin)
 {
   led->pin = pin;
-  led->state = false;
+  led->level = false;
   led->last_toggle_time_us = 0;
+  led->state = LED_DEFAULT;
 
   gpio_config_t io_config = {
       .pin_bit_mask = (1ULL << pin),
@@ -45,8 +46,11 @@ void LED_init(led_t *led, gpio_num_t pin)
  */
 void LED_on(led_t *led)
 {
-  led->state = true;
-  gpio_set_level(led->pin, 1);
+  if (led->state == LED_DEFAULT || led->state == LED_ON)
+  {
+    led->level = true;
+    gpio_set_level(led->pin, 1);
+  }
 }
 
 /**
@@ -56,8 +60,11 @@ void LED_on(led_t *led)
  */
 void LED_off(led_t *led)
 {
-  led->state = false;
-  gpio_set_level(led->pin, 0);
+  if (led->state == LED_DEFAULT || led->state == LED_OFF)
+  {
+    led->level = false;
+    gpio_set_level(led->pin, 0);
+  }
 }
 
 /**
@@ -67,13 +74,16 @@ void LED_off(led_t *led)
  */
 void LED_toggle(led_t *led)
 {
-  int64_t now = esp_timer_get_time();
-
-  if (now - led->last_toggle_time_us > LED_DEBOUNCE_TIME_US)
+  if (led->state == LED_DEFAULT)
   {
-    led->last_toggle_time_us = now;
-    led->state = !led->state;
-    gpio_set_level(led->pin, led->state ? 1 : 0);
+    int64_t now = esp_timer_get_time();
+
+    if (now - led->last_toggle_time_us > LED_DEBOUNCE_TIME_US)
+    {
+      led->last_toggle_time_us = now;
+      led->level = !led->level;
+      gpio_set_level(led->pin, led->level ? 1 : 0);
+    }
   }
 }
 
@@ -83,6 +93,6 @@ void LED_toggle(led_t *led)
  */
 void leds_init()
 {
-  LED_init(&door_led, DOOR_LED_PIN);
-  LED_init(&roof_led, ROOF_LED_PIN);
+  LED_init(&led_door, PIN_LED_DOOR);
+  LED_init(&led_roof, PIN_LED_ROOF);
 }

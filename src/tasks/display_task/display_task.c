@@ -12,9 +12,9 @@
 #include "sensors/lcd1602/lcd1602.h"
 #include "sensors/photocell/photocell.h"
 #include "sensors/ir_receiver/ir_receiver.h"
+#include "display_screens/display_screens.h"
+#include "display_events/display_events.h"
 
-#define SCREEN_COMMON_COUNT 3
-#define SCREEN_MENU_COUNT 4
 #define CLEAR_TIMER 100
 
 static void display_common_screens();
@@ -79,24 +79,15 @@ static void display_common_screens()
   switch (display_config.current_state.common)
   {
   case SCREEN_COMMON_HOME:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("Welcome to");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("SmartHome!");
+    display_screen_common_home();
     break;
 
   case SCREEN_COMMON_TEMPERATURE:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("Temperature:");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("%.1f C   ", last_temp);
+    display_screen_common_temperature(&last_temp);
     break;
 
   case SCREEN_COMMON_PHOTOCELL:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("PhotoCell:");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("%d   ", last_photocell);
+    display_screen_common_photocell(&last_photocell);
     break;
 
   default:
@@ -106,31 +97,20 @@ static void display_common_screens()
 
 static void display_menu_screens()
 {
+  // need queue to get LED state
   switch (display_config.current_state.menu)
   {
   case SCREEN_MENU_HOME:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("SmartHome");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("Menu:");
+    display_screen_menu_home();
     break;
   case SCREEN_MENU_FAN_MOTOR:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("Fan Motor");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("Power:");
+    display_screen_menu_fan_motor();
     break;
   case SCREEN_MENU_DOOR_LED:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("Door LED");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("Power On/Off:");
+    display_screen_menu_led_door();
     break;
-  case SCREEN_MENU_WINDOW_LED:
-    lcd1602_set_cursor(0, 0);
-    lcd1602_printf("Window LED");
-    lcd1602_set_cursor(0, 1);
-    lcd1602_printf("Power On/Off:");
+  case SCREEN_MENU_ROOF_LED:
+    display_screen_menu_led_roof();
     break;
 
   default:
@@ -138,46 +118,7 @@ static void display_menu_screens()
   }
 }
 
-void display_event_handler(display_screen_event_t event, ir_button_t code)
+void display_event_handler(display_event_t event)
 {
-  if (event == EVENT_TIMER_INTERRUPT && display_config.current_state.type == SCREEN_COMMON)
-  {
-    display_screen_state_t new_state = display_config.current_state;
-    new_state.common = (new_state.common + 1) % SCREEN_COMMON_COUNT;
-    xQueueOverwrite(display_queue, &new_state);
-    return;
-  }
-
-  if (event == EVENT_PROCESS_IR_CODE && code == IR_CODE_OK && display_config.current_state.type == SCREEN_COMMON)
-  {
-    display_screen_state_t new_state = {
-        .type = SCREEN_MENU,
-        .menu = SCREEN_MENU_HOME};
-    xQueueOverwrite(display_queue, &new_state);
-    return;
-  }
-
-  if (event == EVENT_PROCESS_IR_CODE && display_config.current_state.type == SCREEN_MENU)
-  {
-    display_screen_state_t new_state = display_config.current_state;
-
-    switch (code)
-    {
-    case IR_CODE_UP:
-      new_state.menu = (new_state.menu - 1 + SCREEN_MENU_COUNT) % SCREEN_MENU_COUNT;
-      break;
-    case IR_CODE_DOWN:
-      new_state.menu = (new_state.menu + 1) % SCREEN_MENU_COUNT;
-      break;
-    case IR_CODE_OK:
-      new_state.type = SCREEN_COMMON;
-      new_state.common = SCREEN_COMMON_HOME; // Return to home screen after exiting menu
-      break;
-    default:
-      break;
-    }
-
-    xQueueOverwrite(display_queue, &new_state);
-    return;
-  }
+  display_events_handler(event, &display_config);
 }

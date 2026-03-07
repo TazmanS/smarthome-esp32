@@ -15,9 +15,11 @@ typedef struct
   int power;
 } motor_t;
 
-extern motor_t fan_motor;
+extern motor_t motor_fan;
 
 void motors_init();
-void set_motor_power(motor_t *motor, int power);
+void motor_set_power(motor_t *motor, int power);
+void motor_turn_off(motor_t *motor);
+void motor_turn_on(motor_t *motor);
 
 #endif

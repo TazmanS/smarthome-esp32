@@ -42,7 +42,7 @@ void rmt_init()
 {
   rmt_rx_channel_config_t rx_chan_config = {
       .clk_src = RMT_CLK_SRC_DEFAULT,
-      .gpio_num = IR_RECEIVER_PIN,
+      .gpio_num = PIN_IR_RECEIVER,
       .resolution_hz = 1000000, // 1 tick = 1 us
       .mem_block_symbols = 64};
 

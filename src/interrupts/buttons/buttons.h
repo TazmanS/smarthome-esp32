@@ -24,7 +24,7 @@ typedef struct
  * @return void
  */
 void buttons_interrupt_init();
-extern button_t door_button;
-extern button_t roof_button;
+extern button_t button_door;
+extern button_t button_roof;
 
 #endif

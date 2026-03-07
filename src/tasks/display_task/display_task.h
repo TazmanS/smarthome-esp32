@@ -10,6 +10,9 @@
 #include <stdbool.h>
 #include "sensors/ir_receiver/ir_receiver.h"
 
+#define SCREEN_COMMON_COUNT 3
+#define SCREEN_MENU_COUNT 4
+
 /* ________________________________________ */
 
 typedef enum
@@ -24,7 +27,7 @@ typedef enum
   SCREEN_MENU_HOME,
   SCREEN_MENU_FAN_MOTOR,
   SCREEN_MENU_DOOR_LED,
-  SCREEN_MENU_WINDOW_LED
+  SCREEN_MENU_ROOF_LED
 } display_screen_menu_state_t;
 
 typedef enum
@@ -52,18 +55,31 @@ typedef struct
 
 /* ________________________________________ */
 
+typedef struct
+{
+} display_event_timer_interrupt_t;
+
+typedef struct
+{
+  ir_button_t code;
+} display_event_ir_receiver_t;
+
 typedef enum
 {
-  EVENT_SHOW_HOME_SCREEN,
-  EVENT_NEXT_COMMON_SCREEN,
-  EVENT_PREV_COMMON_SCREEN,
-  EVENT_SHOW_MENU_HOME_SCREEN,
-  EVENT_NEXT_MENU_SCREEN,
-  EVENT_PREV_MENU_SCREEN,
-
   EVENT_PROCESS_IR_CODE,
   EVENT_TIMER_INTERRUPT
-} display_screen_event_t;
+} display_event_type_t;
+
+typedef struct
+{
+  display_event_type_t type;
+  union
+  {
+    display_event_timer_interrupt_t timer_interrupt;
+    display_event_ir_receiver_t ir_receiver;
+  };
+
+} display_event_t;
 
 /* ________________________________________ */
 
@@ -74,6 +90,6 @@ typedef enum
  * @return void
  */
 void display_task(void *pvParameters);
-void display_event_handler(display_screen_event_t event, ir_button_t code);
+void display_event_handler(display_event_t event);
 
 #endif

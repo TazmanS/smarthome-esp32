@@ -9,8 +9,8 @@
 #include "config/pins/pins.h"
 #include "esp_attr.h"
 
-button_t door_button;
-button_t roof_button;
+button_t button_door;
+button_t button_roof;
 
 /**
  * @brief Initialize a Button object and register ISR
@@ -54,6 +54,6 @@ void IRAM_ATTR button_pressed(void *arg)
  */
 void buttons_interrupt_init()
 {
-  Button_init(&door_button, DOOR_BUTTON_PIN, button_pressed, &door_led);
-  Button_init(&roof_button, ROOF_BUTTON_PIN, button_pressed, &roof_led);
+  Button_init(&button_door, PIN_BUTTON_DOOR, button_pressed, &led_door);
+  Button_init(&button_roof, PIN_BUTTON_ROOF, button_pressed, &led_roof);
 }

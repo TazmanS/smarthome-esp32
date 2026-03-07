@@ -13,8 +13,11 @@ void ir_task(void *pvParameters)
     if (xQueueReceive(ir_queue, &code, portMAX_DELAY))
     {
       ESP_LOGI("IR TASK", "IR CODE = %s", ir_get_code_to_string(code));
-
-      display_event_handler(EVENT_PROCESS_IR_CODE, code);
+      display_event_t event = {
+          .type = EVENT_PROCESS_IR_CODE,
+          .ir_receiver = {
+              .code = code}};
+      display_event_handler(event);
     }
   }
 }

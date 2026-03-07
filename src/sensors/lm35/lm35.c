@@ -21,8 +21,8 @@ adc_module_t adc_lm35_module = {};
 
 void lm35_init()
 {
-  adc_lm35_module.pin = LM35_PIN,
-  adc_lm35_module.channel = LM35_ADC_CHANNEL,
+  adc_lm35_module.pin = PIN_LM35,
+  adc_lm35_module.channel = CHANNEL_ADC_LM35,
   adc_lm35_module.attenuation = ADC_ATTEN_DB_12,
   adc_lm35_module.bitwidth = ADC_BITWIDTH_12,
   adc_init_channel(&adc_lm35_module);

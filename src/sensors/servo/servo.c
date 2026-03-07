@@ -44,7 +44,7 @@ static void init_servo(servo_t *servo, gpio_num_t pin, ledc_channel_t channel)
   servo->gpio_pin = pin;
   servo->channel = channel;
 
-  init_pwm_channel(pin, channel, SERVO_WINDOW_TIMER);
+  init_pwm_channel(pin, channel, TIMER_SERVO_WINDOW);
 }
 
 /**
@@ -61,5 +61,5 @@ void set_servo_angle(servo_t *servo, int angle)
 
 void servos_init()
 {
-  init_servo(&window_servo, WINDOW_SERVO_PIN, WINDOW_SERVO_CHANNEL);
+  init_servo(&window_servo, PIN_SERVO_WINDOW, CHANNEL_SERVO_WINDOW);
 }

@@ -6,7 +6,7 @@
 
 #define MOTOR_MAX_DUTY 1023
 
-motor_t fan_motor = {};
+motor_t motor_fan = {};
 
 static void init_motor(motor_t *motor, gpio_num_t pin_INA, gpio_num_t pin_INB, ledc_channel_t channel_INA, ledc_channel_t channel_INB)
 {
@@ -16,7 +16,7 @@ static void init_motor(motor_t *motor, gpio_num_t pin_INA, gpio_num_t pin_INB, l
   motor->channel_INB = channel_INB;
   motor->is_active = false;
   motor->is_reverse = false;
-  motor->power = 0;
+  motor->power = 50;
 
   gpio_config_t io_conf = {
       .pin_bit_mask = (1ULL << pin_INA) | (1ULL << pin_INB),
@@ -29,16 +29,16 @@ static void init_motor(motor_t *motor, gpio_num_t pin_INA, gpio_num_t pin_INB, l
   gpio_set_level(pin_INA, 0);
   gpio_set_level(pin_INB, 0);
 
-  init_pwm_channel(pin_INA, channel_INA, MOTOR_FAN_TIMER);
-  init_pwm_channel(pin_INB, channel_INB, MOTOR_FAN_TIMER);
+  init_pwm_channel(pin_INA, channel_INA, TIMER_FAN_MOTOR);
+  init_pwm_channel(pin_INB, channel_INB, TIMER_FAN_MOTOR);
 }
 
 void motors_init()
 {
-  init_motor(&fan_motor, FAN_MOTOR_INA_PIN, FAN_MOTOR_INB_PIN, FAN_MOTOR_INA_CHANNEL, FAN_MOTOR_INB_CHANNEL);
+  init_motor(&motor_fan, PIN_MOTOR_FAN_INA, PIN_MOTOR_FAN_INB, CHANNEL_MOTOR_FAN_INA, CHANNEL_MOTOR_FAN_INB);
 }
 
-void set_motor_power(motor_t *motor, int power)
+void motor_set_power(motor_t *motor, int power)
 {
   if (power < 0)
     power = 0;
@@ -46,8 +46,22 @@ void set_motor_power(motor_t *motor, int power)
     power = 100;
 
   motor->power = power;
-  uint32_t duty = (MOTOR_MAX_DUTY * motor->power) / 100;
+}
 
+void motor_turn_off(motor_t *motor)
+{
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->channel_INA, 0);
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->channel_INA);
+
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->channel_INB, 0);
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->channel_INB);
+
+  motor->is_active = false;
+}
+
+void motor_turn_on(motor_t *motor)
+{
+  uint32_t duty = (MOTOR_MAX_DUTY * motor->power) / 100;
   if (motor->is_reverse)
   {
     ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->channel_INA, duty);
