@@ -8,14 +8,17 @@
 #include "tasks/display_task/display_task.h"
 #include "sensors/ir_receiver/ir_receiver.h"
 #include "esp_log.h"
+#include "esp_task_wdt.h"
 
 void ir_task(void *pvParameters)
 {
+  ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
   ir_button_t code;
 
   while (1)
   {
-    if (xQueueReceive(ir_queue, &code, portMAX_DELAY))
+    if (xQueueReceive(ir_queue, &code, pdMS_TO_TICKS(4000)))
     {
       ESP_LOGI("IR TASK", "IR CODE = %s", ir_get_code_to_string(code));
       display_event_t event = {
@@ -24,5 +27,7 @@ void ir_task(void *pvParameters)
               .code = code}};
       display_event_handler(event);
     }
+
+    esp_task_wdt_reset();
   }
 }

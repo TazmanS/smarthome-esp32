@@ -7,6 +7,7 @@
 #include "tasks/tasks.h"
 #include "freertos/FreeRTOS.h"
 #include "esp_log.h"
+#include "esp_task_wdt.h"
 #include <string.h>
 #include "tasks/mqtt_task/mqtt_task.h"
 #include "tasks/log_task/log_task.h"
@@ -14,6 +15,8 @@
 
 void send_photocell_task(void *pvParameters)
 {
+  ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
   while (1)
   {
     int light = photocell_read_light_level();
@@ -27,6 +30,8 @@ void send_photocell_task(void *pvParameters)
     xQueueSend(log_queue, &data, portMAX_DELAY);
 
     xQueueOverwrite(photo_cell_store_queue, &light);
+
+    esp_task_wdt_reset();
 
     vTaskDelay(pdMS_TO_TICKS(1000));
   }

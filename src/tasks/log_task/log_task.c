@@ -7,6 +7,7 @@
 #include "log_task.h"
 #include "tasks/tasks.h"
 #include "esp_log.h"
+#include "esp_task_wdt.h"
 
 /**
  * @brief Logging task function
@@ -16,6 +17,8 @@
  */
 void log_task(void *pvParameters)
 {
+  ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
   while (1)
   {
     sensor_data_t data;
@@ -23,5 +26,7 @@ void log_task(void *pvParameters)
     {
       ESP_LOGI("logTask", "%s: %.2f", data.key, data.value);
     }
+
+    esp_task_wdt_reset();
   }
 }

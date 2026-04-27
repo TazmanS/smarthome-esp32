@@ -7,7 +7,9 @@
 #include "tasks.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_log.h"
 #include "stdio.h"
+#include "string.h"
 
 #include "tasks/send_temp_task/send_temp_task.h"
 #include "tasks/mqtt_task/mqtt_task.h"
@@ -43,6 +45,55 @@ const int mqtt_task_priority = 4;
 const int ir_task_stack_size = 4096;
 const int ir_task_priority = 3;
 
+const int cpu_monitor_task_stack_size = 4096;
+const int cpu_monitor_task_priority = 1;
+
+#if (configUSE_TRACE_FACILITY == 1) && (configGENERATE_RUN_TIME_STATS == 1)
+static void cpu_monitor_task(void *pvParameters)
+{
+  (void)pvParameters;
+
+  while (1)
+  {
+    UBaseType_t task_count = uxTaskGetNumberOfTasks();
+    TaskStatus_t *status_array = pvPortMalloc((task_count + 4U) * sizeof(TaskStatus_t));
+
+    if (status_array == NULL)
+    {
+      ESP_LOGW("CpuMon", "Failed to allocate status array");
+      vTaskDelay(pdMS_TO_TICKS(5000));
+      continue;
+    }
+
+    uint32_t total_runtime = 0;
+    UBaseType_t got = uxTaskGetSystemState(status_array, task_count + 4U, &total_runtime);
+
+    if (got > 0U && total_runtime > 0U)
+    {
+      uint32_t idle_runtime = 0;
+      for (UBaseType_t i = 0; i < got; i++)
+      {
+        if (strncmp(status_array[i].pcTaskName, "IDLE", 4) == 0)
+        {
+          idle_runtime += status_array[i].ulRunTimeCounter;
+        }
+      }
+
+      float cpu_load_pct = 100.0f - (100.0f * ((float)idle_runtime / (float)total_runtime));
+      ESP_LOGI("CpuMon", "CPU load: %.1f%%", cpu_load_pct);
+
+      if (cpu_load_pct > 70.0f)
+      {
+        ESP_LOGW("CpuMon", "CPU load exceeded 70%% threshold");
+      }
+    }
+
+    vPortFree(status_array);
+    vTaskDelay(pdMS_TO_TICKS(5000));
+  }
+}
+#endif
+
 /**
  * @brief Initializes all application tasks
  * @details Creates and starts FreeRTOS tasks for
@@ -75,4 +126,10 @@ void tasks_init(void)
 
   configASSERT(xTaskCreate(log_task, "LogTask", log_task_stack_size, NULL, log_task_priority, NULL) == pdPASS);
   configASSERT(xTaskCreate(mqtt_task, "MqttTask", mqtt_task_stack_size, NULL, mqtt_task_priority, NULL) == pdPASS);
+
+#if (configUSE_TRACE_FACILITY == 1) && (configGENERATE_RUN_TIME_STATS == 1)
+  configASSERT(xTaskCreate(cpu_monitor_task, "CpuMonTask", cpu_monitor_task_stack_size, NULL, cpu_monitor_task_priority, NULL) == pdPASS);
+#else
+  ESP_LOGW("CpuMon", "Runtime stats are disabled, CPU load monitor task not started");
+#endif
 }

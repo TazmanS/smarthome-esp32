@@ -8,11 +8,14 @@
 #include "driver/gpio.h"
 #include "config/pins/pins.h"
 #include "esp_timer.h"
+#include "freertos/FreeRTOS.h"
 
 led_t led_door;
 led_t led_roof;
 
 #define LED_DEBOUNCE_TIME_US 200000
+
+static portMUX_TYPE s_led_lock = portMUX_INITIALIZER_UNLOCKED;
 
 /**
  * @brief Initialize an LED object and configure GPIO
@@ -46,11 +49,13 @@ void LED_init(led_t *led, gpio_num_t pin)
  */
 void LED_on(led_t *led)
 {
+  taskENTER_CRITICAL(&s_led_lock);
   if (led->state == LED_DEFAULT || led->state == LED_ON)
   {
     led->level = true;
     gpio_set_level(led->pin, 1);
   }
+  taskEXIT_CRITICAL(&s_led_lock);
 }
 
 /**
@@ -60,11 +65,13 @@ void LED_on(led_t *led)
  */
 void LED_off(led_t *led)
 {
+  taskENTER_CRITICAL(&s_led_lock);
   if (led->state == LED_DEFAULT || led->state == LED_OFF)
   {
     led->level = false;
     gpio_set_level(led->pin, 0);
   }
+  taskEXIT_CRITICAL(&s_led_lock);
 }
 
 /**
@@ -74,6 +81,7 @@ void LED_off(led_t *led)
  */
 void LED_toggle(led_t *led)
 {
+  taskENTER_CRITICAL(&s_led_lock);
   if (led->state == LED_DEFAULT)
   {
     int64_t now = esp_timer_get_time();
@@ -85,6 +93,35 @@ void LED_toggle(led_t *led)
       gpio_set_level(led->pin, led->level ? 1 : 0);
     }
   }
+  taskEXIT_CRITICAL(&s_led_lock);
+}
+
+void LED_on_from_isr(led_t *led)
+{
+  taskENTER_CRITICAL_ISR(&s_led_lock);
+  if (led->state == LED_DEFAULT || led->state == LED_ON)
+  {
+    led->level = true;
+    gpio_set_level(led->pin, 1);
+  }
+  taskEXIT_CRITICAL_ISR(&s_led_lock);
+}
+
+void LED_toggle_from_isr(led_t *led)
+{
+  taskENTER_CRITICAL_ISR(&s_led_lock);
+  if (led->state == LED_DEFAULT)
+  {
+    int64_t now = esp_timer_get_time();
+
+    if (now - led->last_toggle_time_us > LED_DEBOUNCE_TIME_US)
+    {
+      led->last_toggle_time_us = now;
+      led->level = !led->level;
+      gpio_set_level(led->pin, led->level ? 1 : 0);
+    }
+  }
+  taskEXIT_CRITICAL_ISR(&s_led_lock);
 }
 
 /**

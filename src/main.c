@@ -10,6 +10,11 @@
 #include "sensors/sensors.h"
 #include "interrupts/interrupts.h"
 #include "tasks/tasks.h"
+#include "freertos/FreeRTOS.h"
+#include "esp_task_wdt.h"
+#include "esp_log.h"
+
+static const char *TAG = "main";
 
 /**
  * @brief Main application entry point
@@ -25,6 +30,22 @@
  */
 void app_main(void)
 {
+  const esp_task_wdt_config_t twdt_cfg = {
+      .timeout_ms = 5000,
+      .idle_core_mask = (1 << portNUM_PROCESSORS) - 1,
+      .trigger_panic = true,
+  };
+
+  esp_err_t twdt_err = esp_task_wdt_init(&twdt_cfg);
+  if (twdt_err == ESP_ERR_INVALID_STATE)
+  {
+    ESP_LOGW(TAG, "Task WDT already initialized, continuing with existing configuration");
+  }
+  else
+  {
+    ESP_ERROR_CHECK(twdt_err);
+  }
+
   nvs_init();
 
   modules_init();

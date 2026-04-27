@@ -47,6 +47,8 @@ void LED_off(led_t *led);
  * @return void
  */
 void LED_toggle(led_t *led);
+void LED_on_from_isr(led_t *led);
+void LED_toggle_from_isr(led_t *led);
 /**
  * @brief Initialize application LEDs
  * @return void

@@ -10,6 +10,7 @@
 #include "esp_attr.h"
 #include "sensors/leds/leds.h"
 #include "esp_timer.h"
+#include "esp_err.h"
 
 #define PIR_DEBOUNCE_TIME_US 200000
 static int64_t last_toggle_time_us = 0;
@@ -23,7 +24,7 @@ void IRAM_ATTR pir_motion_callback(void *arg)
   uint64_t now = esp_timer_get_time();
   if (now - last_toggle_time_us > PIR_DEBOUNCE_TIME_US)
   {
-    LED_on(&led_door);
+    LED_on_from_isr(&led_door);
     last_toggle_time_us = now;
   }
 }
@@ -42,7 +43,12 @@ void pir_motion_init()
       .intr_type = GPIO_INTR_POSEDGE};
   gpio_config(&io_config);
 
-  gpio_install_isr_service(0);
+  esp_err_t isr_ret = gpio_install_isr_service(0);
+  if (isr_ret != ESP_OK && isr_ret != ESP_ERR_INVALID_STATE)
+  {
+    ESP_ERROR_CHECK(isr_ret);
+  }
+
   gpio_isr_handler_add(PIN_PIR_MOTION, pir_motion_callback, NULL);
 }
 

@@ -29,7 +29,7 @@ extern QueueHandle_t ir_queue;
  */
 typedef struct
 {
-  char key[16];       /**< Key identifying the sensor */
+  char key[32];       /**< Key identifying the sensor */
   float value;        /**< Sensor value */
   uint32_t timestamp; /**< Timestamp of the reading */
 } sensor_data_t;

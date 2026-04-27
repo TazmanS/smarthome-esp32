@@ -8,8 +8,11 @@
 #include "config/pins/pins.h"
 #include "config/channels/channels.h"
 #include "config/my_timers/my_timers.h"
+#include "freertos/FreeRTOS.h"
 
 #define MOTOR_MAX_DUTY 1023
+
+static portMUX_TYPE s_motor_lock = portMUX_INITIALIZER_UNLOCKED;
 
 motor_t motor_fan = {};
 
@@ -45,16 +48,19 @@ void motors_init()
 
 void motor_set_power(motor_t *motor, int power)
 {
+  taskENTER_CRITICAL(&s_motor_lock);
   if (power < 0)
     power = 0;
   else if (power > 100)
     power = 100;
 
   motor->power = power;
+  taskEXIT_CRITICAL(&s_motor_lock);
 }
 
 void motor_turn_off(motor_t *motor)
 {
+  taskENTER_CRITICAL(&s_motor_lock);
   ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->channel_INA, 0);
   ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->channel_INA);
 
@@ -62,10 +68,12 @@ void motor_turn_off(motor_t *motor)
   ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->channel_INB);
 
   motor->is_active = false;
+  taskEXIT_CRITICAL(&s_motor_lock);
 }
 
 void motor_turn_on(motor_t *motor)
 {
+  taskENTER_CRITICAL(&s_motor_lock);
   uint32_t duty = (MOTOR_MAX_DUTY * motor->power) / 100;
   if (motor->is_reverse)
   {
@@ -83,4 +91,5 @@ void motor_turn_on(motor_t *motor)
     ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->channel_INB, duty);
     ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->channel_INB);
   }
+  taskEXIT_CRITICAL(&s_motor_lock);
 }

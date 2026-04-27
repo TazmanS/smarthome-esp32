@@ -16,8 +16,8 @@
 
 void modules_init()
 {
-  // wifi_init_sta(WIFI_SSID, WIFI_PASS);
-  // mqtt_app_start();
+  wifi_init_sta(WIFI_SSID, WIFI_PASS);
+  mqtt_app_start();
   adc_init();
   i2c_init();
   pwm_init_timer();

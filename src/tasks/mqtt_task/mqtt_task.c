@@ -7,6 +7,7 @@
 #include "mqtt_task.h"
 #include "tasks/tasks.h"
 #include "modules/mqtt/mqtt.h"
+#include "esp_task_wdt.h"
 
 /**
  * @brief MQTT communication task function
@@ -16,6 +17,8 @@
  */
 void mqtt_task(void *pvParameters)
 {
+  ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
   while (1)
   {
     sensor_data_t data;
@@ -26,5 +29,7 @@ void mqtt_task(void *pvParameters)
 
       mqtt_publish(data.key, buf);
     }
+
+    esp_task_wdt_reset();
   }
 }

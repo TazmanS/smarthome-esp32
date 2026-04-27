@@ -8,6 +8,7 @@
 #include "sensors/leds/leds.h"
 #include "config/pins/pins.h"
 #include "esp_attr.h"
+#include "esp_err.h"
 
 button_t button_door;
 button_t button_roof;
@@ -34,7 +35,12 @@ void Button_init(button_t *btn, gpio_num_t pin, void (*callback)(void *), void *
       .intr_type = GPIO_INTR_NEGEDGE};
   gpio_config(&io_conf);
 
-  gpio_install_isr_service(0);
+  esp_err_t isr_ret = gpio_install_isr_service(0);
+  if (isr_ret != ESP_OK && isr_ret != ESP_ERR_INVALID_STATE)
+  {
+    ESP_ERROR_CHECK(isr_ret);
+  }
+
   gpio_isr_handler_add(pin, callback, arg);
 }
 
@@ -45,7 +51,7 @@ void Button_init(button_t *btn, gpio_num_t pin, void (*callback)(void *), void *
 void IRAM_ATTR button_pressed(void *arg)
 {
   led_t *led = (led_t *)arg;
-  LED_toggle(led);
+  LED_toggle_from_isr(led);
 }
 
 /**

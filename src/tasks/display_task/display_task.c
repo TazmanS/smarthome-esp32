@@ -7,6 +7,7 @@
 #include "display_task.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_task_wdt.h"
 
 #include "tasks/tasks.h"
 #include "sensors/lcd1602/lcd1602.h"
@@ -32,6 +33,8 @@ static display_config_t display_config = {
  */
 void display_task(void *pvParameters)
 {
+  ESP_ERROR_CHECK(esp_task_wdt_add(NULL));
+
   lcd1602_clear();
   vTaskDelay(pdMS_TO_TICKS(CLEAR_TIMER));
 
@@ -55,6 +58,7 @@ void display_task(void *pvParameters)
       display_menu_screens();
     }
 
+    esp_task_wdt_reset();
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

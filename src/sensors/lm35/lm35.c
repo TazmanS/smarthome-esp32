@@ -9,9 +9,15 @@
 #include "config/channels/channels.h"
 #include "modules/adc/adc.h"
 #include "helpers/sma/sma.h"
+#include "esp_log.h"
 
 #define ADC_MAX_RAW 4095.0
 #define ADC_MAX_MV 3300.0
+
+#define TEMP_MIN_C -40.0f
+#define TEMP_MAX_C 125.0f
+
+static const char *TAG = "LM35";
 
 #define SMA_WINDOW_SIZE 16
 static int sma_buffer[SMA_WINDOW_SIZE];
@@ -37,10 +43,38 @@ void lm35_init()
  */
 float lm35_read_temperature(void)
 {
+  static float last_valid_temp = 25.0f;
+
   int raw_adc_value = 0;
-  ESP_ERROR_CHECK(adc_oneshot_read(adc_handle, adc_lm35_module.channel, &raw_adc_value));
+  esp_err_t err = adc_oneshot_read(adc_handle, adc_lm35_module.channel, &raw_adc_value);
+  if (err != ESP_OK)
+  {
+    ESP_LOGW(TAG, "adc_oneshot_read failed: %s", esp_err_to_name(err));
+    return last_valid_temp;
+  }
+
+  if (raw_adc_value < 0)
+  {
+    raw_adc_value = 0;
+  }
+  else if (raw_adc_value > (int)ADC_MAX_RAW)
+  {
+    raw_adc_value = (int)ADC_MAX_RAW;
+  }
+
   float voltage_mv = ((float)raw_adc_value / ADC_MAX_RAW) * ADC_MAX_MV;
   int averaged_mv = sma_add_sample(&lm35_sma, (int)voltage_mv);
   float temperature_c = averaged_mv / 10.0f;
+
+  if (temperature_c < TEMP_MIN_C)
+  {
+    temperature_c = TEMP_MIN_C;
+  }
+  else if (temperature_c > TEMP_MAX_C)
+  {
+    temperature_c = TEMP_MAX_C;
+  }
+
+  last_valid_temp = temperature_c;
   return temperature_c;
 }

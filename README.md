@@ -67,6 +67,11 @@ idf.py -p <PORT> flash monitor
 
 Doxygen documentation is generated to `docs/doxygen/html`. Open `docs/doxygen/html/index.html` in a browser to browse the code docs.
 
+System diagrams:
+
+- Architecture diagrams: `docs/ARCHITECTURE.md`
+- Compact block diagram: `docs/BLOCK_DIAGRAM.md`
+
 ---
 
 ## Project structure 🔍
@@ -83,9 +88,13 @@ Doxygen documentation is generated to `docs/doxygen/html`. Open `docs/doxygen/ht
 
 ## Testing & Troubleshooting 🩺
 
-- Check serial output for runtime logs.
-- Ensure secrets are correctly set and WiFi/MQTT broker reachable.
-- Use `pio run -t upload` or `idf.py` to flash and `monitor` to view logs.
+- **Serial logs**: Check `pio device monitor` or terminal for runtime debug output
+- **WiFi/MQTT**: Ensure credentials in `src/secrets/secrets.c` are correct and broker is reachable
+- **Task WDT timeout**: All FreeRTOS tasks must call `esp_task_wdt_reset()` within timeout window (5s default, except IR task uses 4s timeout to handle extended idle periods)
+- **Sensor data corruption**: Fixed buffer overflow - `sensor_data_t.key` now holds 32 bytes (was 16, causing truncation of `sensor/temperature` topic)
+- **Build warnings**: Legacy ADC driver deprecation warning is normal; modern ADC API integration planned for future
+- **Temperature readings**: Logged every 1 second from `SendTempTask`; check `critical(max)=...us` timing in logs
+- **CPU load**: `CpuMonTask` logs CPU statistics every 5 seconds when FreeRTOS runtime stats enabled
 
 ---
 

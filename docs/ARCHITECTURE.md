@@ -1,5 +1,7 @@
 # SmartHome ESP32 - System Architecture
 
+For a compact review-ready diagram, see `docs/BLOCK_DIAGRAM.md`.
+
 ## 1. System Initialization
 
 Sequence diagram showing the initialization of all components at startup:
@@ -175,12 +177,12 @@ graph TB
 - **GPIO** - General-purpose digital inputs/outputs
 
 ### ⚙️ FreeRTOS Tasks
-- **Send Temp Task** - Reads temperature sensor and sends to queue
-- **Send Photocell Task** - Reads light level and sends to queue
-- **Display Task** - Controls display (information output)
-- **MQTT Task** - Main processing task, publishes data to cloud and processes commands
-- **Log Task** - Event logging
-- **IR Task** - IR command processing and device control
+- **Send Temp Task** - Reads LM35 temperature sensor and sends readings to MQTT and log queues
+- **Send Photocell Task** - Reads light level sensor and sends to MQTT queue
+- **Display Task** - Controls LCD1602 display (information output)
+- **MQTT Task** - Main processing task, publishes sensor data to cloud and processes commands
+- **Log Task** - Event logging to console
+- **IR Task** - IR remote command processing with timeout-based watchdog reset
 
 ### 📡 Communication
 - **WiFi** - Home network WiFi connectivity
@@ -192,12 +194,15 @@ graph TB
 
 ## Execution Flow
 
-1. **Initialization**: `app_main()` calls initialization functions in sequence
-2. **Parallel Startup**: All tasks are launched and run simultaneously via FreeRTOS scheduler
-3. **Data Collection**: Each task collects data from its sensors
-4. **Queues**: Tasks use queues for safe data transmission between threads
-5. **Cloud Processing**: MQTT Task reads from all queues and publishes data to MQTT Broker
-6. **Device Control**: Commands from cloud update actuator states (motor, LEDs, servo)
+1. **Initialization**: `app_main()` initializes Task WDT (with idempotent error handling)
+2. **NVS Load**: Non-volatile storage initialized for WiFi/MQTT credentials
+3. **Module Start**: WiFi connected, MQTT client initialized and connected
+4. **Hardware Init**: ADC, I2C, PWM, RMT drivers and sensors initialized
+5. **Task Launch**: All FreeRTOS tasks started and run in parallel
+6. **Data Collection**: Each task reads sensors at scheduled intervals
+7. **Queue Exchange**: Data sent through FreeRTOS queues for safe inter-task communication
+8. **Cloud Sync**: MQTT Task publishes sensor data to cloud broker
+9. **Watchdog**: All tasks regularly reset watchdog timer (IR task has 4s timeout for graceful handling)
 
 ## FreeRTOS Queues
 
