@@ -106,8 +106,6 @@ System diagrams:
 
 ## License
 
-No license file is included. Add a `LICENSE` if you want to specify one.
+This project is licensed under the MIT License.
 
----
-
-If you'd like, I can add a CI workflow (build/test) or a short guide for specific boards. 🔧
+See the [LICENSE](LICENSE) file for details.
